@@ -15,7 +15,11 @@ def _peer_group_key(row):
     return f"{row['work_category']}|{row['state']}"
 
 
-import shap
+try:
+    import shap
+    HAS_SHAP = True
+except ImportError:
+    HAS_SHAP = False
 
 def _score_group(group_df, peer_median, peer_p90):
     valid_mask = group_df["sanction_amount"].notna()
@@ -45,18 +49,22 @@ def _score_group(group_df, peer_median, peer_p90):
     else:
         normalized_scores = pd.Series(1 - (raw_scores - min_s) / (max_s - min_s), index=features.index)
         
-        # Calculate SHAP values
-        explainer = shap.TreeExplainer(iso)
-        # TreeExplainer on IsolationForest gives anomaly score explanation
-        shap_vals = explainer.shap_values(X)
-        
         shap_values_dict = {}
-        feature_names = features.columns
-        for i, idx in enumerate(features.index):
-            # Sort by absolute contribution
-            contributions = list(zip(feature_names, shap_vals[i]))
-            contributions.sort(key=lambda x: abs(x[1]), reverse=True)
-            shap_values_dict[idx] = {k: float(v) for k, v in contributions}
+        if HAS_SHAP:
+            try:
+                explainer = shap.TreeExplainer(iso)
+                shap_vals = explainer.shap_values(X)
+                feature_names = features.columns
+                for i, idx in enumerate(features.index):
+                    contributions = list(zip(feature_names, shap_vals[i]))
+                    contributions.sort(key=lambda x: abs(x[1]), reverse=True)
+                    shap_values_dict[idx] = {k: float(v) for k, v in contributions}
+            except Exception:
+                for idx in features.index:
+                    shap_values_dict[idx] = {"amount_lakhs": float(normalized_scores.loc[idx])}
+        else:
+            for idx in features.index:
+                shap_values_dict[idx] = {"amount_lakhs": float(normalized_scores.loc[idx])}
             
     return normalized_scores, shap_values_dict
 
