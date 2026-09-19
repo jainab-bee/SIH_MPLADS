@@ -1,109 +1,157 @@
 # 🛡️ MPLADS Sentinel
 
-**Explainable AI for Public Works Risk, Audit Prioritization & Early Warning**
-_Smart India Hackathon 2026 — Problem Statement SIH26102_
+**Explainable AI for Public Works Risk, Audit Prioritization & Early Warning**  
+*Smart India Hackathon 2026 — Problem Statement SIH26102*
 
 ---
 
-## Problem
+## 📌 Overview
 
-MPLADS (Members of Parliament Local Area Development Scheme) funds ₹5 crore/year per MP for local development works. With ~19,000+ sanctioned works annually, manually identifying which projects deserve priority review is infeasible.
+**MPLADS Sentinel** is an AI-assisted intelligence and audit-prioritization platform built on top of MPLADS (*Members of Parliament Local Area Development Scheme*) sanctioned works data.
 
-**Existing system answers**: "What is happening?"
-**MPLADS Sentinel answers**: "What needs attention, why, and what should be reviewed next?"
+- **Existing eSAKSHI / Portal answers:** *"What is happening?"*
+- **MPLADS Sentinel answers:** *"What needs attention, why, and which works should be audited first?"*
 
----
-
-## Solution
-
-MPLADS Sentinel is an AI-assisted intelligence layer that:
-1. Detects unusually high-cost works using **Isolation Forest** per peer group
-2. Finds semantically similar/potentially duplicate works using **sentence-transformers**
-3. Identifies old pending works using **date and status analysis**
-4. Fuses all signals into a transparent **0–100 Review Priority Score**
-5. Explains every flag with evidence cards ("Why Flagged?")
-
-> ⚠️ **This system does NOT determine fraud.** It identifies unusual patterns and prioritizes works for human review.
+> ⚠️ **Important:** This system does **NOT** autonomously declare fraud. It identifies unusual patterns, calculates multidimensional risk scores, provides explainable AI evidence, and prioritizes works for human-in-the-loop audit review.
 
 ---
 
-## Input Dataset
+## ✨ Key Features
 
-- **File**: `Works Sanctioned.csv`
-- **Records**: ~19,001 sanctioned MPLADS works (2023–2026)
-- **Columns**: Sr. No., Work category, Work (code), State, IDA (district), MP Name, Constituency, Work description, Recommended date, Sanction Date, Sanction Amount (₹), Work Status
-
----
-
-## ML Techniques
-
-| Detector | Algorithm | Max Score |
-|----------|-----------|-----------|
-| Cost Anomaly | Isolation Forest (scikit-learn) + RobustScaler | 40 pts |
-| Duplicate/Similar Work | all-MiniLM-L6-v2 + cosine similarity | 30 pts |
-| Delay / Old Pending | Statistical (days since sanction + status) | 30 pts |
-
-**Risk Score = Cost (40%) + Similarity (30%) + Delay (30%)**
-
-| Score | Risk Level |
-|-------|-----------|
-| 0–39 | 🟢 LOW |
-| 40–69 | 🟡 MEDIUM |
-| 70–100 | 🔴 HIGH |
+| Module / Feature | Description |
+|------------------|-------------|
+| 📊 **Executive Summary** | High-level KPI cards, state/district filters, risk breakdowns & expenditure trends |
+| 🏛️ **My Constituency** | MP/Public Representative portal with constituency performance & work progress tracking |
+| 🏢 **Nodal Officer Portal** | District audit queue, local work assignments, and verification tracker |
+| 🔴 **High-Risk Audit Prioritization** | AI-ranked work prioritization table with multidimensional anomaly filters |
+| 🔍 **Work Deep Dive & Explainability** | Detailed "Why Flagged?" breakdown, score radar, cost comparisons & similar work matches |
+| 📋 **Review & Escalation Workflow** | Human-in-the-loop actioning (Clear, Request Info, Flag for Audit, Escalate) |
+| 📄 **Investigation Report** | Auto-generated, downloadable formal text/PDF audit dossier with tamper hash |
+| 🔗 **Tamper-Evident Audit Trail** | SHA-256 cryptographic hash-chained immutable audit log of all system actions |
+| 💬 **Citizen Feedback & Redressal** | Public grievance portal for reporting ground-level work observations with evidence upload |
+| 🌐 **Public Transparency Portal** | Read-only open portal displaying anonymized statistics and completed works |
+| 🔐 **Role-Based Access Control** | Secure authentication for Admin, Nodal Officer, MP/Representative, and Public Citizen |
 
 ---
 
-## How to Run
+## 🧠 Risk Scoring Engine & AI Architecture
 
+The overall **Risk Score (0 – 100)** is computed using a 4-pillar Explainable AI framework:
+
+| Detector Pillar | Algorithm / Technique | Max Weight |
+|-----------------|----------------------|------------|
+| 💰 **Cost Anomaly** | Isolation Forest (`scikit-learn`) + RobustScaler | **30 pts** |
+| 👥 **Duplicate / Similar Work** | `all-MiniLM-L6-v2` Sentence Transformer + Cosine Similarity | **25 pts** |
+| ⏱️ **Delay / Pending Work** | Statistical delay metrics (days elapsed since recommendation/sanction) | **20 pts** |
+| ✂️ **Split Sanctioning / Clustering** | Pattern detection for work splitting below approval thresholds | **25 pts** |
+
+### Risk Level Classification:
+- 🔴 **HIGH RISK:** `Score >= 70`
+- 🟡 **MEDIUM RISK:** `40 <= Score < 70`
+- 🟢 **LOW RISK:** `Score < 40`
+
+---
+
+## 🔑 Demo Login Credentials
+
+| Username | Password | Role | Features & Access |
+|----------|----------|------|-------------------|
+| `admin` | `admin123` | 🛡️ Admin | Full access to all modules & system settings |
+| `nodal_officer` | `nodal123` | 🏢 Nodal Officer / Auditor | Nodal Portal, Audit Prioritization, Review Workflow & Reports |
+| `mp_member` | `mp123` | 🏛️ MP / Representative | Constituency Dashboard & Recommended Works Tracker |
+| `public` | `pub123` | 🌐 Citizen / Public | Citizen Feedback Portal & Public Transparency Portal |
+
+---
+
+## 📁 Project Structure
+
+```
+sih/
+├── app.py                        ← Main Streamlit Web Application
+├── requirements.txt              ← Python Package Dependencies
+├── README.md                     ← Project Documentation
+├── Works Sanctioned.csv          ← Dataset file (place in root directory)
+├── sentinel.db                   ← SQLite Database (Audit Trail, Evidence, Users)
+├── data/
+│   ├── __init__.py
+│   └── preprocessing.py          ← Data loading, cleaning, & metric calculations
+├── ml/
+│   ├── __init__.py
+│   ├── cost_anomaly.py           ← Isolation Forest model for expenditure anomalies
+│   ├── duplicate_detection.py    ← Semantic NLP model for similar work detection
+│   ├── delay_detection.py        ← Statistical delay & pending duration metrics
+│   └── risk_score.py             ← Multidimensional risk score fusion (0–100)
+├── db/
+│   ├── __init__.py
+│   └── database.py               ← SQLite schema, cryptographic hash chain & user auth
+├── utils/
+│   ├── __init__.py
+│   └── helpers.py                ← Formatting & UI helper functions
+└── assets/
+    └── embeddings.pkl            ← Cached embeddings (auto-generated on first run)
+```
+
+---
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- Python `3.10` or higher installed
+- Git installed
+
+### 1️⃣ Clone the Repository
 ```bash
-# 1. Clone / navigate to project folder
+git clone https://github.com/YOUR_USERNAME/mplads-sentinel.git
 cd mplads-sentinel
+```
 
-# 2. Install dependencies
+### 2️⃣ Create & Activate Virtual Environment
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3️⃣ Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-# 3. Run the app
+### 4️⃣ Dataset Setup
+Place your dataset file `Works Sanctioned.csv` inside the project root folder.
+
+> ℹ️ **Dataset Note:** If the CSV file is missing, the application automatically generates realistic fallback sample data so you can test all features immediately.
+
+### 5️⃣ Run the Application
+```bash
 streamlit run app.py
 ```
 
-The app opens at `http://localhost:8501`
-
-> **Note**: First run computes sentence-transformer embeddings (~2 min for 19k records).
-> Subsequent runs load from cache instantly.
+The application will start locally at:  
+👉 **`http://localhost:8501`**
 
 ---
 
-## App Pages
+## ⚡ First Run Notes
 
-| Page | Description |
-|------|-------------|
-| 📊 Dashboard | KPI cards, charts, state/district analysis |
-| 🔴 High-Risk Works | Sortable table of flagged works |
-| 🔍 Project Detail | Full explainability — "Why Flagged?" evidence cards |
-| 📈 Risk Analysis | Score distributions, scatter plots, trend charts |
-| ℹ️ About | Methodology, data availability, future roadmap |
+- On the **very first launch**, sentence-transformer embeddings are calculated for work descriptions. This takes about **1–2 minutes**.
+- Once calculated, embeddings are automatically cached to `assets/embeddings.pkl` for instant future launches.
 
 ---
 
-## Limitations
+## 🔒 Cryptographic Audit Chain
 
-- **No expenditure/payment data** in this CSV — cost analysis is sanction-amount only
-- **No GPS coordinates** — geographic overlap detection not possible
-- **No physical progress %** — delay detection uses dates and status only
-- **No expected completion date** — uses 365-day MPLADS guideline as proxy
-- Similarity detection flags description-level similarity, not confirmed duplication
+Every review decision, status update, evidence upload, or citizen report generates a **SHA-256 cryptographic hash block** stored sequentially in `sentinel.db`.  
+- Each record links back to the previous record's hash (`previous_hash`).
+- Built-in **Chain Integrity Verification** guarantees tamper detection for audit evidence.
 
 ---
 
-## Future Scope
+## 📄 License & Disclaimer
 
-- Connect to live eSAKSHI API for real-time data
-- Add expenditure analysis when payment data available
-- Add GPS coordinates for spatial clustering
-- Integrate geo-tagged photo verification
-- Add contractor blacklist matching
-- Incorporate CAG audit report validation feedback loop
-
----
-
-_This is a prototype for Smart India Hackathon 2026. All findings are algorithmic signals for human review only._
+This project is developed as a prototype for **Smart India Hackathon 2026** under Problem Statement `SIH26102`.  
+All AI risk classifications and flags serve as decision support for human auditors and should be officially verified prior to taking legal or administrative action.
