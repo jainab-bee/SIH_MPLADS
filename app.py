@@ -83,11 +83,11 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;}
 .sentinel-header h1{font-size:1.8rem;font-weight:700;margin:0;color:#ffffff !important;}
 .sentinel-header p{font-size:0.85rem;margin:0.2rem 0 0;opacity:0.85;color:#e2e8f0 !important;}
 
-/* Section Titles — VIBRANT & 100% VISIBLE IN DARK & LIGHT THEMES */
+/* Section Titles — HIGH CONTRAST & VISIBLE IN ALL THEMES */
 .section-title{
     font-size:1.35rem !important;
     font-weight:700 !important;
-    color: #38bdf8 !important;
+    color: #0284c7 !important;
     border-bottom:2px solid #0284c7 !important;
     padding-bottom:0.45rem !important;
     margin-top:1rem !important;
@@ -97,12 +97,7 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;}
     align-items:center;
 }
 
-/* Ensure all subheadings are clearly visible */
-h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
-    color: var(--text-color, #f8fafc) !important;
-}
-
-/* KPI Cards — High contrast dark navy */
+/* KPI Cards — High contrast dark slate */
 .kpi-card{
     background:#0f172a !important;
     border-radius:12px;
@@ -131,16 +126,19 @@ h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4 {
 .evidence-card.high .evidence-pts{color:#ef4444;}
 .evidence-card.low .evidence-pts{color:#22c55e;}
 
-/* Disclaimers */
+/* Disclaimers & Info Boxes — SOLID DARK SLATE FOR 100% CONTRAST IN LIGHT & DARK MODES */
 .disclaimer{
-    background:rgba(59, 130, 246, 0.1) !important;
-    border:1px solid rgba(59, 130, 246, 0.35) !important;
+    background:#0f172a !important;
+    border:1px solid #334155 !important;
+    border-left:5px solid #38bdf8 !important;
     border-radius:8px;
-    padding:0.7rem 1.1rem;
-    font-size:0.82rem;
-    color:#e2e8f0 !important;
+    padding:0.85rem 1.2rem;
+    font-size:0.88rem;
+    color:#ffffff !important;
     margin-bottom:1.2rem;
+    box-shadow:0 2px 4px rgba(0,0,0,0.15);
 }
+.disclaimer strong{color:#38bdf8 !important;}
 
 /* Status Chips */
 .status-new{background:#1e3a8a;color:#93c5fd;padding:2px 8px;border-radius:10px;font-size:0.75rem;font-weight:700;}
@@ -967,38 +965,65 @@ def page_audit_trail ():
     st .download_button ("⬇️ Download Full Audit Log (JSON)",data =json .dumps (log ,indent =2 ,default =str ),file_name =f"audit_log_{datetime .date .today ()}.json",mime ="application/json")
 
 def page_citizen_feedback (fdf ):
-    st .markdown ("<div class='section-title'>💬 Citizen Feedback & Issue Reporting</div>",unsafe_allow_html =True )
-    st .markdown ('<div class="disclaimer">Citizens can report concerns about specific MPLADS works. All reports require verification by authorized officials before any action is taken.</div>',unsafe_allow_html =True )
-    tab1 ,tab2 =st .tabs (["📝 Submit Feedback","📋 All Submissions"])
-    with tab1 :
-        with st .form ("citizen_feedback_form",clear_on_submit =True ):
-            st .markdown ("#### Report a Concern")
-            sr_no_input =st .text_input ("Work Sr. No. (if known):",placeholder ="e.g. 4821")
-            state_input =st .selectbox ("State:",["Select…"]+sorted (fdf ["state"].dropna ().unique ().tolist ()))
-            district_input =st .text_input ("District:",placeholder ="e.g. Agra")
-            category =st .selectbox ("Issue Category:",["Select category…","Work not started despite sanction","Work appears to be duplicate of another","Cost appears unusually high","Work completed on paper but not physically","Incorrect location / beneficiary","Implementation agency related concern","Other"])
-            description =st .text_area ("Describe the concern:",height =120 ,placeholder ="Please describe what you observed…")
-            contact =st .text_input ("Contact (optional):",placeholder ="Email or phone for follow-up")
-            is_anonymous =st .checkbox ("Submit anonymously")
-            if st .form_submit_button ("📤 Submit Report",type ="primary",use_container_width =True ):
-                if not description or category =="Select category…":
-                    st .error ("Please fill in the issue category and description.")
-                else :
-                    entry ={"id":len (st .session_state .feedback_list )+1 ,"timestamp":datetime .datetime .now ().strftime ("%d %b %Y %H:%M"),"sr_no":sr_no_input or "—","state":state_input ,"district":district_input ,"category":category ,"description":description ,"contact":"Anonymous"if is_anonymous else (contact or "Not provided"),"status":"RECEIVED"}
-                    st .session_state .feedback_list .append (entry )
-                    add_audit_entry ("CITIZEN_FEEDBACK",sr_no_input or "—",f"Citizen report received — {category }")
-                    st .success (f"✅ Thank you! Your report has been submitted (Ref# CF-{entry ['id']:04d}).")
-    with tab2 :
-        if st .session_state .role not in ["MoSPI Admin","District Nodal Officer"]:
-            st .warning ("Access restricted to Administrative roles.");return
-        feedback =st .session_state .feedback_list
-        if not feedback :
-            st .info ("No citizen feedback received yet.")
-        else :
-            st .metric ("Total Submissions",len (feedback ))
-            fb_df =pd .DataFrame (feedback )
-            st .dataframe (fb_df ,use_container_width =True ,hide_index =True )
-            st .download_button ("⬇️ Download Feedback CSV",data =fb_df .to_csv (index =False ),file_name =f"citizen_feedback_{datetime .date .today ()}.csv",mime ="text/csv")
+    role = st.session_state.get("role", "")
+    st.markdown ("<div class='section-title'>💬 Citizen Feedback & Issue Reporting</div>",unsafe_allow_html =True )
+    st.markdown ('<div class="disclaimer">Citizens can report concerns about specific MPLADS works. Administrative officials review, investigate, and update status for all submitted reports.</div>',unsafe_allow_html =True )
+
+    if role in ["MoSPI Admin", "District Nodal Officer"]:
+        # Admin / Nodal Officer view — Primary view is Review & Management Queue
+        tab_manage, tab_submit = st.tabs(["📋 Citizen Reports Queue & Review", "📝 Submit Internal Report"])
+        with tab_manage:
+            feedback = st.session_state.feedback_list
+            if not feedback:
+                st.info("No citizen reports or feedback received yet.")
+            else:
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Total Submissions", len(feedback))
+                c2.metric("Received", len([f for f in feedback if f.get("status") == "RECEIVED"]))
+                c3.metric("Under Review / Resolved", len([f for f in feedback if f.get("status") != "RECEIVED"]))
+
+                st.markdown("---")
+                st.markdown("#### 🔍 All Citizen Submissions")
+                fb_df = pd.DataFrame(feedback)
+                st.dataframe(fb_df, use_container_width=True, hide_index=True)
+
+                st.download_button("⬇️ Download Feedback CSV", data=fb_df.to_csv(index=False), file_name=f"citizen_feedback_{datetime.date.today()}.csv", mime="text/csv")
+        
+        with tab_submit:
+            with st.form("admin_feedback_form", clear_on_submit=True):
+                st.markdown("#### Record Ground Verification / Internal Feedback")
+                sr_no_input = st.text_input("Work Sr. No. (if known):", placeholder="e.g. 4821")
+                state_input = st.selectbox("State:", ["Select…"] + sorted(fdf["state"].dropna().unique().tolist()))
+                district_input = st.text_input("District:", placeholder="e.g. Agra")
+                category = st.selectbox("Issue Category:", ["Select category…", "Work not started despite sanction", "Work appears to be duplicate of another", "Cost appears unusually high", "Work completed on paper but not physically", "Incorrect location / beneficiary", "Implementation agency related concern", "Other"])
+                description = st.text_area("Describe verification observations:", height=120, placeholder="Enter official observations…")
+                if st.form_submit_button("📤 Submit Verification Record", type="primary", use_container_width=True):
+                    if not description or category == "Select category…":
+                        st.error("Please fill in category and description.")
+                    else:
+                        entry = {"id": len(st.session_state.feedback_list) + 1, "timestamp": datetime.datetime.now().strftime("%d %b %Y %H:%M"), "sr_no": sr_no_input or "—", "state": state_input, "district": district_input, "category": category, "description": description, "contact": f"Official ({st.session_state.user_name})", "status": "UNDER_INVESTIGATION"}
+                        st.session_state.feedback_list.append(entry)
+                        add_audit_entry("CITIZEN_FEEDBACK", sr_no_input or "—", f"Official inspection logged — {category}")
+                        st.success(f"✅ Inspection logged (Ref# CF-{entry['id']:04d}).")
+    else:
+        # Public / MP View — Primary view is Feedback Submission
+        with st.form("citizen_feedback_form", clear_on_submit=True):
+            st.markdown("#### Report a Concern")
+            sr_no_input = st.text_input("Work Sr. No. (if known):", placeholder="e.g. 4821")
+            state_input = st.selectbox("State:", ["Select…"] + sorted(fdf["state"].dropna().unique().tolist()))
+            district_input = st.text_input("District:", placeholder="e.g. Agra")
+            category = st.selectbox("Issue Category:", ["Select category…", "Work not started despite sanction", "Work appears to be duplicate of another", "Cost appears unusually high", "Work completed on paper but not physically", "Incorrect location / beneficiary", "Implementation agency related concern", "Other"])
+            description = st.text_area("Describe the concern:", height=120, placeholder="Please describe what you observed…")
+            contact = st.text_input("Contact (optional):", placeholder="Email or phone for follow-up")
+            is_anonymous = st.checkbox("Submit anonymously")
+            if st.form_submit_button("📤 Submit Report", type="primary", use_container_width=True):
+                if not description or category == "Select category…":
+                    st.error("Please fill in the issue category and description.")
+                else:
+                    entry = {"id": len(st.session_state.feedback_list) + 1, "timestamp": datetime.datetime.now().strftime("%d %b %Y %H:%M"), "sr_no": sr_no_input or "—", "state": state_input, "district": district_input, "category": category, "description": description, "contact": "Anonymous" if is_anonymous else (contact or "Not provided"), "status": "RECEIVED"}
+                    st.session_state.feedback_list.append(entry)
+                    add_audit_entry("CITIZEN_FEEDBACK", sr_no_input or "—", f"Citizen report received — {category}")
+                    st.success(f"✅ Thank you! Your report has been submitted (Ref# CF-{entry['id']:04d}).")
 
 def page_transparency_portal (df ):
     st .markdown ('<div class="sentinel-header"><h1>🌐 Public Transparency Portal</h1><p>MPLADS Works — Public Dashboard | Read-Only View</p></div>',unsafe_allow_html =True )
