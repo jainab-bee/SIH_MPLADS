@@ -193,18 +193,76 @@ def page_login ():
             st .markdown ("**Demo Credentials:** `admin`/`admin123`, `nodal`/`nodal123`, `mp`/`mp123`, `public`/`pub123`")
 
         with tab_reg :
-            reg_user =st .text_input ("New Username")
-            reg_pass =st .text_input ("New Password",type ="password")
-            reg_name =st .text_input ("Full Name")
-            reg_role =st .selectbox ("Role",["MoSPI Admin","District Nodal Officer","Member of Parliament","Public Viewer"])
-            reg_dist =st .text_input ("District (if applicable)")
-            reg_const =st .text_input ("Constituency (if applicable)")
+            st.markdown("#### 📝 Create an Account")
+            reg_role = st.selectbox(
+                "Select Your Official Role:",
+                ["Select Role...", "MoSPI Admin", "District Nodal Officer", "Member of Parliament", "Public Viewer"],
+                key="reg_role_select"
+            )
 
-            if st .button ("Register",use_container_width =True ):
-                if register_user (reg_user .strip ().lower (),reg_pass .strip (),reg_role ,reg_name .strip (),reg_dist .strip (),reg_const .strip ()):
-                    st .success ("Registered successfully! Please Sign In.")
-                else :
-                    st .error ("Username already exists or error occurred.")
+            if reg_role == "Select Role...":
+                st.info("👈 Please select your role above to load role-specific registration fields.")
+
+            elif reg_role == "MoSPI Admin":
+                st.caption("🛡️ **MoSPI Admin Registration** (Ministry Administration Access)")
+                reg_name = st.text_input("Full Name (e.g. Dr. Rajesh Kumar)", key="reg_admin_name")
+                reg_emp = st.text_input("Admin Employee / Govt ID (e.g. MOSPI-ADM-9942)", key="reg_admin_emp")
+                reg_user = st.text_input("New Username", key="reg_admin_user")
+                reg_pass = st.text_input("New Password", type="password", key="reg_admin_pass")
+
+                if st.button("Register as MoSPI Admin", use_container_width=True, type="primary"):
+                    if not reg_name or not reg_user or not reg_pass:
+                        st.error("Please fill in Name, Username, and Password.")
+                    elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), "", ""):
+                        st.success("✅ Admin Account Registered successfully! Please Sign In.")
+                    else:
+                        st.error("Username already exists or error occurred.")
+
+            elif reg_role == "District Nodal Officer":
+                st.caption("🏢 **District Nodal Officer Registration** (Field Audit Jurisdiction)")
+                reg_name = st.text_input("Full Name (e.g. Vikram Singh, IAS)", key="reg_nodal_name")
+                reg_dist = st.text_input("Assigned District (e.g. Ajmer, Agra, Jaipur)", key="reg_nodal_dist")
+                reg_user = st.text_input("New Username", key="reg_nodal_user")
+                reg_pass = st.text_input("New Password", type="password", key="reg_nodal_pass")
+
+                if st.button("Register as Nodal Officer", use_container_width=True, type="primary"):
+                    if not reg_name or not reg_dist or not reg_user or not reg_pass:
+                        st.error("Please fill in Name, District, Username, and Password.")
+                    elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), reg_dist.strip(), ""):
+                        st.success("✅ Nodal Officer Registered successfully! Please Sign In.")
+                    else:
+                        st.error("Username already exists or error occurred.")
+
+            elif reg_role == "Member of Parliament":
+                st.caption("🏛️ **Member of Parliament Registration** (Constituency Tracker)")
+                reg_name = st.text_input("Hon'ble MP Full Name (e.g. Smt. Sunita Sharma)", key="reg_mp_name")
+                reg_house = st.selectbox("Parliament House:", ["Lok Sabha", "Rajya Sabha"], key="reg_mp_house")
+                reg_const = st.text_input("Constituency Name (e.g. Agra, Jaipur, Varanasi)", key="reg_mp_const")
+                reg_user = st.text_input("New Username", key="reg_mp_user")
+                reg_pass = st.text_input("New Password", type="password", key="reg_mp_pass")
+
+                if st.button("Register as MP Member", use_container_width=True, type="primary"):
+                    if not reg_name or not reg_const or not reg_user or not reg_pass:
+                        st.error("Please fill in Name, Constituency, Username, and Password.")
+                    elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), "", reg_const.strip()):
+                        st.success("✅ MP Account Registered successfully! Please Sign In.")
+                    else:
+                        st.error("Username already exists or error occurred.")
+
+            elif reg_role == "Public Viewer":
+                st.caption("🌐 **Public Citizen Registration** (Transparency Access)")
+                reg_name = st.text_input("Full Name (e.g. Amit Verma)", key="reg_pub_name")
+                reg_dist = st.text_input("City / District (optional)", key="reg_pub_dist")
+                reg_user = st.text_input("New Username", key="reg_pub_user")
+                reg_pass = st.text_input("New Password", type="password", key="reg_pub_pass")
+
+                if st.button("Register Citizen Account", use_container_width=True, type="primary"):
+                    if not reg_name or not reg_user or not reg_pass:
+                        st.error("Please fill in Name, Username, and Password.")
+                    elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), reg_dist.strip(), ""):
+                        st.success("✅ Citizen Account Registered successfully! Please Sign In.")
+                    else:
+                        st.error("Username already exists or error occurred.")
 
     st .markdown ('<div style="text-align:center;font-size:0.72rem;color:#94a3b8;margin-top:1rem;">⚠️ Prototype — SIH 2026 | Not for official use</div>',unsafe_allow_html =True )
 
