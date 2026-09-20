@@ -970,43 +970,24 @@ def page_citizen_feedback (fdf ):
     st.markdown ('<div class="disclaimer">Citizens can report concerns about specific MPLADS works. Administrative officials review, investigate, and update status for all submitted reports.</div>',unsafe_allow_html =True )
 
     if role in ["MoSPI Admin", "District Nodal Officer"]:
-        # Admin / Nodal Officer view — Primary view is Review & Management Queue
-        tab_manage, tab_submit = st.tabs(["📋 Citizen Reports Queue & Review", "📝 Submit Internal Report"])
-        with tab_manage:
-            feedback = st.session_state.feedback_list
-            if not feedback:
-                st.info("No citizen reports or feedback received yet.")
-            else:
-                c1, c2, c3 = st.columns(3)
-                c1.metric("Total Submissions", len(feedback))
-                c2.metric("Received", len([f for f in feedback if f.get("status") == "RECEIVED"]))
-                c3.metric("Under Review / Resolved", len([f for f in feedback if f.get("status") != "RECEIVED"]))
+        # Admin / Nodal Officer view — Direct Review & Management Queue (No submission form)
+        feedback = st.session_state.feedback_list
+        if not feedback:
+            st.info("No citizen reports or feedback received yet.")
+        else:
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Total Submissions", len(feedback))
+            c2.metric("Received", len([f for f in feedback if f.get("status") == "RECEIVED"]))
+            c3.metric("Under Review / Resolved", len([f for f in feedback if f.get("status") != "RECEIVED"]))
 
-                st.markdown("---")
-                st.markdown("#### 🔍 All Citizen Submissions")
-                fb_df = pd.DataFrame(feedback)
-                st.dataframe(fb_df, use_container_width=True, hide_index=True)
+            st.markdown("---")
+            st.markdown("#### 🔍 All Citizen Submissions & Grievances")
+            fb_df = pd.DataFrame(feedback)
+            st.dataframe(fb_df, use_container_width=True, hide_index=True)
 
-                st.download_button("⬇️ Download Feedback CSV", data=fb_df.to_csv(index=False), file_name=f"citizen_feedback_{datetime.date.today()}.csv", mime="text/csv")
-        
-        with tab_submit:
-            with st.form("admin_feedback_form", clear_on_submit=True):
-                st.markdown("#### Record Ground Verification / Internal Feedback")
-                sr_no_input = st.text_input("Work Sr. No. (if known):", placeholder="e.g. 4821")
-                state_input = st.selectbox("State:", ["Select…"] + sorted(fdf["state"].dropna().unique().tolist()))
-                district_input = st.text_input("District:", placeholder="e.g. Agra")
-                category = st.selectbox("Issue Category:", ["Select category…", "Work not started despite sanction", "Work appears to be duplicate of another", "Cost appears unusually high", "Work completed on paper but not physically", "Incorrect location / beneficiary", "Implementation agency related concern", "Other"])
-                description = st.text_area("Describe verification observations:", height=120, placeholder="Enter official observations…")
-                if st.form_submit_button("📤 Submit Verification Record", type="primary", use_container_width=True):
-                    if not description or category == "Select category…":
-                        st.error("Please fill in category and description.")
-                    else:
-                        entry = {"id": len(st.session_state.feedback_list) + 1, "timestamp": datetime.datetime.now().strftime("%d %b %Y %H:%M"), "sr_no": sr_no_input or "—", "state": state_input, "district": district_input, "category": category, "description": description, "contact": f"Official ({st.session_state.user_name})", "status": "UNDER_INVESTIGATION"}
-                        st.session_state.feedback_list.append(entry)
-                        add_audit_entry("CITIZEN_FEEDBACK", sr_no_input or "—", f"Official inspection logged — {category}")
-                        st.success(f"✅ Inspection logged (Ref# CF-{entry['id']:04d}).")
+            st.download_button("⬇️ Download Feedback CSV", data=fb_df.to_csv(index=False), file_name=f"citizen_feedback_{datetime.date.today()}.csv", mime="text/csv")
     else:
-        # Public / MP View — Primary view is Feedback Submission
+        # Public / MP View — Primary view is Feedback Submission Form
         with st.form("citizen_feedback_form", clear_on_submit=True):
             st.markdown("#### Report a Concern")
             sr_no_input = st.text_input("Work Sr. No. (if known):", placeholder="e.g. 4821")
