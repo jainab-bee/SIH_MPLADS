@@ -164,13 +164,12 @@ def run_core_models ():
 
 def page_login ():
     st .markdown ("""<div style="text-align:center;padding:2rem 0 1rem;">
-        <div style="font-size:3rem;">🛡️</div>
         <div style="font-size:1.8rem;font-weight:800;color:#38bdf8;">MPLADS Sentinel</div>
         <div style="font-size:0.88rem;color:#94a3b8;margin-top:4px;">Explainable AI for Public Works Risk & Audit Prioritization</div>
     </div>""",unsafe_allow_html =True )
     col1 ,col2 ,col3 =st .columns ([1 ,1.4 ,1 ])
     with col2 :
-        tab_in ,tab_reg =st .tabs (["🔐 Sign In","📝 Register"])
+        tab_in ,tab_reg =st .tabs (["Sign In","Register"])
 
         with tab_in :
             username =st .text_input ("Username",placeholder ="Enter username")
@@ -193,7 +192,7 @@ def page_login ():
             st .markdown ("**Demo Credentials:** `admin`/`admin123`, `nodal`/`nodal123`, `mp`/`mp123`, `public`/`pub123`")
 
         with tab_reg :
-            st.markdown("#### 📝 Create an Account")
+            st.markdown("#### Create an Account")
             reg_role = st.selectbox(
                 "Select Your Official Role:",
                 ["Select Role...", "MoSPI Admin", "District Nodal Officer", "Member of Parliament", "Public Viewer"],
@@ -201,10 +200,10 @@ def page_login ():
             )
 
             if reg_role == "Select Role...":
-                st.info("👈 Please select your role above to load role-specific registration fields.")
+                st.info("Please select your role above to load role-specific registration fields.")
 
             elif reg_role == "MoSPI Admin":
-                st.caption("🛡️ **MoSPI Admin Registration** (Ministry Administration Access)")
+                st.caption("**MoSPI Admin Registration** (Ministry Administration Access)")
                 reg_name = st.text_input("Full Name (e.g. Dr. Rajesh Kumar)", key="reg_admin_name")
                 reg_emp = st.text_input("Admin Employee / Govt ID (e.g. MOSPI-ADM-9942)", key="reg_admin_emp")
                 reg_user = st.text_input("New Username", key="reg_admin_user")
@@ -214,12 +213,12 @@ def page_login ():
                     if not reg_name or not reg_user or not reg_pass:
                         st.error("Please fill in Name, Username, and Password.")
                     elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), "", ""):
-                        st.success("✅ Admin Account Registered successfully! Please Sign In.")
+                        st.success("Admin Account Registered successfully! Please Sign In.")
                     else:
                         st.error("Username already exists or error occurred.")
 
             elif reg_role == "District Nodal Officer":
-                st.caption("🏢 **District Nodal Officer Registration** (Field Audit Jurisdiction)")
+                st.caption("**District Nodal Officer Registration** (Field Audit Jurisdiction)")
                 reg_name = st.text_input("Full Name (e.g. Vikram Singh, IAS)", key="reg_nodal_name")
                 reg_dist = st.text_input("Assigned District (e.g. Ajmer, Agra, Jaipur)", key="reg_nodal_dist")
                 reg_user = st.text_input("New Username", key="reg_nodal_user")
@@ -229,12 +228,12 @@ def page_login ():
                     if not reg_name or not reg_dist or not reg_user or not reg_pass:
                         st.error("Please fill in Name, District, Username, and Password.")
                     elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), reg_dist.strip(), ""):
-                        st.success("✅ Nodal Officer Registered successfully! Please Sign In.")
+                        st.success("Nodal Officer Registered successfully! Please Sign In.")
                     else:
                         st.error("Username already exists or error occurred.")
 
             elif reg_role == "Member of Parliament":
-                st.caption("🏛️ **Member of Parliament Registration** (Constituency Tracker)")
+                st.caption("**Member of Parliament Registration** (Constituency Tracker)")
                 reg_name = st.text_input("Hon'ble MP Full Name (e.g. Smt. Sunita Sharma)", key="reg_mp_name")
                 reg_house = st.selectbox("Parliament House:", ["Lok Sabha", "Rajya Sabha"], key="reg_mp_house")
                 reg_const = st.text_input("Constituency Name (e.g. Agra, Jaipur, Varanasi)", key="reg_mp_const")
@@ -245,12 +244,12 @@ def page_login ():
                     if not reg_name or not reg_const or not reg_user or not reg_pass:
                         st.error("Please fill in Name, Constituency, Username, and Password.")
                     elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), "", reg_const.strip()):
-                        st.success("✅ MP Account Registered successfully! Please Sign In.")
+                        st.success("MP Account Registered successfully! Please Sign In.")
                     else:
                         st.error("Username already exists or error occurred.")
 
             elif reg_role == "Public Viewer":
-                st.caption("🌐 **Public Citizen Registration** (Transparency Access)")
+                st.caption("**Public Citizen Registration** (Transparency Access)")
                 reg_name = st.text_input("Full Name (e.g. Amit Verma)", key="reg_pub_name")
                 reg_dist = st.text_input("City / District (optional)", key="reg_pub_dist")
                 reg_user = st.text_input("New Username", key="reg_pub_user")
@@ -260,11 +259,11 @@ def page_login ():
                     if not reg_name or not reg_user or not reg_pass:
                         st.error("Please fill in Name, Username, and Password.")
                     elif register_user(reg_user.strip().lower(), reg_pass.strip(), reg_role, reg_name.strip(), reg_dist.strip(), ""):
-                        st.success("✅ Citizen Account Registered successfully! Please Sign In.")
+                        st.success("Citizen Account Registered successfully! Please Sign In.")
                     else:
                         st.error("Username already exists or error occurred.")
 
-    st .markdown ('<div style="text-align:center;font-size:0.72rem;color:#94a3b8;margin-top:1rem;">⚠️ Prototype — SIH 2026 | Not for official use</div>',unsafe_allow_html =True )
+    st .markdown ('<div style="text-align:center;font-size:0.72rem;color:#94a3b8;margin-top:1rem;">Prototype — SIH 2026 | Not for official use</div>',unsafe_allow_html =True )
 
 def sidebar_nav (df ):
     with st .sidebar :
@@ -352,7 +351,7 @@ def apply_filters (df ,filters ):
     return df [mask ].copy ()
 
 def page_dashboard (df ,fdf ):
-    st .markdown ('<div class="sentinel-header"><h1>🛡️ MPLADS Sentinel</h1><p>Explainable AI for Public Works Risk, Audit Prioritization & Early Warning &nbsp;|&nbsp; SIH 2026</p></div>',unsafe_allow_html =True )
+    st .markdown ('<div class="sentinel-header"><h1>MPLADS Sentinel</h1><p>Explainable AI for Public Works Risk, Audit Prioritization & Early Warning &nbsp;|&nbsp; SIH 2026</p></div>',unsafe_allow_html =True )
     st .markdown ('<div class="disclaimer">⚠️ <strong>AI DISCLAIMER:</strong> This system does <em>not</em> determine fraud. It identifies unusual patterns and prioritizes works for human review. All flagged cases require verification by authorized officials.</div>',unsafe_allow_html =True )
     summary =get_data_summary (df )
     high_risk =int ((fdf ["risk_level"]=="HIGH").sum ())
@@ -378,7 +377,7 @@ def page_dashboard (df ,fdf ):
         if missing_evidence_count >0 :
             st .markdown (f"""
             <div style="background:#fef2f2;border:1px solid #ef4444;border-left:5px solid #dc2626;padding:12px 16px;border-radius:6px;margin-bottom:1.5rem;">
-                <h4 style="margin:0;color:#991b1b;font-size:1.05rem;">🚨 Missing Evidence Alerts</h4>
+                <h4 style="margin:0;color:#991b1b;font-size:1.05rem;">Missing Evidence Alerts</h4>
                 <p style="margin:4px 0 0 0;color:#7f1d1d;font-size:0.85rem;">
                     <strong>{missing_evidence_count } works</strong> in your district are missing required Geotagged Photos (either >180 days since sanction, or marked Completed). Please review these immediately in the Project Detail view to ensure compliance.
                 </p>
@@ -390,9 +389,9 @@ def page_dashboard (df ,fdf ):
     (c1 ,"Total Works",f"{len (fdf ):,}",f"of {len (df ):,} total"),
     (c2 ,"Total Sanctioned",fmt_inr_short (fdf ["sanction_amount"].sum ()),"filtered total"),
     (c3 ,"Completed",f"{int (fdf ['is_completed'].sum ()):,}",f"{int (fdf ['is_completed'].mean ()*100 )}% rate"),
-    (c4 ,"🔴 High Risk",f"{high_risk :,}","Priority review"),
-    (c5 ,"🟡 Medium Risk",f"{medium_risk :,}","Flag for audit"),
-    (c6 ,"⏳ Old Pending",f"{int (fdf ['delay_flag'].sum ()):,}",">1 yr not done"),
+    (c4 ,"High Risk",f"{high_risk :,}","Priority review"),
+    (c5 ,"Medium Risk",f"{medium_risk :,}","Flag for audit"),
+    (c6 ,"Old Pending",f"{int (fdf ['delay_flag'].sum ()):,}",">1 yr not done"),
     ]
     for col ,label ,val ,sub in kpis :
         with col :
@@ -436,19 +435,19 @@ def page_dashboard (df ,fdf ):
         st .plotly_chart (fig ,use_container_width =True )
 
 def page_mospi_admin_settings (df ,fdf ):
-    st.markdown ("<div class='section-title'>⚙️ System Tuning & Global Audits (MoSPI Admin)</div>",unsafe_allow_html =True )
+    st.markdown ("<div class='section-title'>System Tuning & Global Audits (MoSPI Admin)</div>",unsafe_allow_html =True )
     st.markdown ('<div class="disclaimer">Adjust global AI risk thresholds, ingest new sanctioned projects into the system, and initiate macro-level state audits.</div>',unsafe_allow_html =True )
 
     tab_tune, tab_add, tab_heat = st.tabs([
-        "🎛️ AI Sensitivity & Global Audits",
-        "➕ Register New Sanctioned Work (Data Ingestion)",
-        "🗺️ Macro Insights & Heatmaps"
+        "AI Sensitivity & Global Audits",
+        "Register New Sanctioned Work (Data Ingestion)",
+        "Macro Insights & Heatmaps"
     ])
 
     with tab_tune:
         col1, col2 = st.columns(2)
         with col1:
-            st.subheader("🎛️ AI Sensitivity Tuning")
+            st.subheader("AI Sensitivity Tuning")
             st.markdown("Adjust the weight (0-50) given to each risk component. Changes apply instantly.")
             w_c = st.slider("Cost Anomaly Sensitivity", 0, 50, st.session_state.w_cost)
             w_d = st.slider("Semantic Similarity Sensitivity", 0, 50, st.session_state.w_dup)
@@ -465,19 +464,19 @@ def page_mospi_admin_settings (df ,fdf ):
                 st.rerun()
 
         with col2:
-            st.subheader("🚔 Initiate Global Audit")
+            st.subheader("Initiate Global Audit")
             target_state = st.selectbox("Target State", ["Select State..."] + sorted([str(x) for x in df["state"].dropna().unique()]))
             target_district = st.selectbox("Target District", ["Select District..."] + sorted([str(x) for x in df[df["state"] == target_state]["district"].dropna().unique()] if target_state != "Select State..." else []))
             audit_reason = st.text_area("Reason for Audit", placeholder="e.g., Unusually high concentration of delayed works...")
             if st.button("Trigger Audit Order", type="primary"):
                 if target_state != "Select State...":
                     add_audit_entry("AUDIT_TRIGGERED", "GLOBAL", f"Initiated audit for {target_state} - {target_district}. Reason: {audit_reason}")
-                    st.success("✅ Audit order dispatched to District Magistrate and CAG.")
+                    st.success("Audit order dispatched to District Magistrate and CAG.")
                 else:
                     st.error("Select a state first.")
 
     with tab_add:
-        st.subheader("➕ Ingest New MPLADS Sanctioned Work")
+        st.subheader("Ingest New MPLADS Sanctioned Work")
         st.markdown("Register a new sanctioned project into the system. The AI Risk Engine will automatically calculate anomaly scores and assign risk priority.")
 
         with st.form("admin_add_project_form", clear_on_submit=True):
@@ -496,7 +495,7 @@ def page_mospi_admin_settings (df ,fdf ):
                 new_sanc_date = st.date_input("Sanction Date:", datetime.date.today())
                 new_status = st.selectbox("Work Status:", ["Sanctioned", "Time Estimation", "Vendor Identification", "Work in Progress", "Physical Inspection", "Work Completed"])
 
-            submit_proj = st.form_submit_button("🚀 Register Project & Trigger AI Scoring", type="primary", use_container_width=True)
+            submit_proj = st.form_submit_button("Register Project & Trigger AI Scoring", type="primary", use_container_width=True)
 
             if submit_proj:
                 if not new_desc or not new_dist or not new_mp or not new_const:
@@ -532,23 +531,23 @@ def page_mospi_admin_settings (df ,fdf ):
 
                     add_audit_entry("PROJECT_ADDED", str(new_sr), f"MoSPI Admin added work #{new_sr}: {new_desc[:50]}... (₹{new_amt_lakhs}L)")
 
-                    st.success(f"✅ **Project #{new_sr} Ingested & AI Scored Successfully!**")
+                    st.success(f"Project #{new_sr} Ingested & AI Scored Successfully!")
                     st.markdown(f"""
                     <div style="background:#0f172a; border:2px solid #3b82f6; border-radius:10px; padding:1.2rem; color:white; margin-top:0.8rem;">
-                        <h4 style="color:#38bdf8; margin:0 0 0.5rem 0;">🎉 New Sanctioned Project Summary</h4>
+                        <h4 style="color:#38bdf8; margin:0 0 0.5rem 0;">New Sanctioned Project Summary</h4>
                         <p style="margin:3px 0;"><strong>Work Sr. No.:</strong> <code style="color:#38bdf8; font-size:1.1rem;">#{new_sr}</code></p>
                         <p style="margin:3px 0;"><strong>Description:</strong> {new_desc}</p>
                         <p style="margin:3px 0;"><strong>Location:</strong> {new_dist}, {new_state} | <strong>MP:</strong> {new_mp} ({new_const})</p>
                         <p style="margin:3px 0;"><strong>Sanctioned Amount:</strong> ₹{new_amt_lakhs:.1f} Lakhs (₹{sanc_amt:,.0f})</p>
                         <p style="margin:3px 0;"><strong>Status:</strong> {new_status}</p>
                         <hr style="border-color:#334155; margin:0.8rem 0;">
-                        <p style="font-size:0.84rem; color:#4ade80; margin:0;">🚀 Project is now live across Dashboard, High-Risk Queue, and Audit Reports!</p>
+                        <p style="font-size:0.84rem; color:#4ade80; margin:0;">Project is now live across Dashboard, High-Risk Queue, and Audit Reports!</p>
                     </div>
                     """, unsafe_allow_html=True)
                     st.rerun()
 
     with tab_heat:
-        st.subheader("🗺️ Macro Insights & Heatmaps")
+        st.subheader("Macro Insights & Heatmaps")
 
         mc1, mc2 = st.columns(2)
         with mc1:
@@ -581,7 +580,7 @@ def page_mospi_admin_settings (df ,fdf ):
             st.plotly_chart(fig_hm, use_container_width=True)
 
 def page_mp_dashboard (fdf ):
-    st .markdown ("<div class='section-title'>🏛️ My Constituency Dashboard</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>My Constituency Dashboard</div>",unsafe_allow_html =True )
     st .markdown ('<div class="disclaimer">Track the progress of your recommended works. This view is strictly restricted to works recommended by you. Risk scores and AI anomalies are kept confidential for auditors.</div>',unsafe_allow_html =True )
 
     c1 ,c2 ,c3 ,c4 =st .columns (4 )
@@ -591,12 +590,12 @@ def page_mp_dashboard (fdf ):
     c4 .metric ("Pending Execution",f"{int (fdf ['is_incomplete'].sum ()):,}")
     st .markdown ("---")
 
-    st .subheader ("🚦 Bottleneck Tracker")
+    st .subheader ("Bottleneck Tracker")
     st .markdown ("Track the exact stage of your pending works.")
 
     pending =fdf [fdf ["is_incomplete"]==True ].sort_values ("days_since_sanction",ascending =False ).head (15 )
     if pending .empty :
-        st .success ("🎉 All recommended works have been completed!")
+        st .success ("All recommended works have been completed!")
     else :
         for _ ,row in pending .iterrows ():
             days =row .get ("days_since_sanction",0 )
@@ -610,7 +609,7 @@ def page_mp_dashboard (fdf ):
 
             stages =["Sanctioned","Time Estimation","Vendor Identification","Physical Inspection","Completed"]
 
-            stuck_badge =" <span style='background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;margin-left:10px;'>⚠️ STUCK? (>180 Days)</span>"if days >180 and active_idx <4 else ""
+            stuck_badge =" <span style='background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;margin-left:10px;'>STUCK? (>180 Days)</span>"if days >180 and active_idx <4 else ""
 
             st .markdown (f"**{row .get ('work_description','')}** — {fmt_inr (row .get ('sanction_amount',0 ))}{stuck_badge }",unsafe_allow_html =True )
 
@@ -623,7 +622,7 @@ def page_mp_dashboard (fdf ):
             st .markdown (html ,unsafe_allow_html =True )
 
     st .markdown ("---")
-    st .subheader ("📋 Complete Works List")
+    st .subheader ("Complete Works List")
     display =fdf [["sr_no","work_description","sanction_amount","work_status","sanction_date","days_since_sanction"]].copy ()
     display ["sanction_amount"]=display ["sanction_amount"].apply (fmt_inr )
     display ["sanction_date"]=display ["sanction_date"].apply (fmt_date )
@@ -631,12 +630,12 @@ def page_mp_dashboard (fdf ):
     st .dataframe (display ,use_container_width =True ,hide_index =True ,height =500 )
 
 def page_high_risk (df ,fdf ):
-    st .markdown ("<div class='section-title'>🔴 High-Risk & Medium-Risk Works</div>",unsafe_allow_html =True )
-    st .markdown ('<div class="disclaimer">⚠️ Flagging does <strong>not</strong> imply wrongdoing. All cases require human verification.</div>',unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>High-Risk & Medium-Risk Works</div>",unsafe_allow_html =True )
+    st .markdown ('<div class="disclaimer">Flagging does <strong>not</strong> imply wrongdoing. All cases require human verification.</div>',unsafe_allow_html =True )
     risk_df =fdf [fdf ["risk_level"].isin (["HIGH","MEDIUM"])].sort_values ("risk_score",ascending =False )
     c1 ,c2 ,c3 =st .columns (3 )
-    c1 .metric ("🔴 High-Risk",int ((risk_df ["risk_level"]=="HIGH").sum ()))
-    c2 .metric ("🟡 Medium-Risk",int ((risk_df ["risk_level"]=="MEDIUM").sum ()))
+    c1 .metric ("High-Risk",int ((risk_df ["risk_level"]=="HIGH").sum ()))
+    c2 .metric ("Medium-Risk",int ((risk_df ["risk_level"]=="MEDIUM").sum ()))
     c3 .metric ("Total Flagged",len (risk_df ))
     display =risk_df [["sr_no","work_description","state","district","sanction_amount","work_status","risk_score","risk_level","main_reason"]].copy ()
     display ["sanction_amount"]=display ["sanction_amount"].apply (fmt_inr )
@@ -653,7 +652,7 @@ def page_high_risk (df ,fdf ):
         st .plotly_chart (fig ,use_container_width =True )
 
 def page_project_detail (df ,similar_map ):
-    st .markdown ("<div class='section-title'>🔍 Project Detail — Explainability View</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Project Detail — Explainability View</div>",unsafe_allow_html =True )
     col_sel1 ,col_sel2 =st .columns ([2 ,1 ])
     with col_sel1 :
         search =st .text_input ("Search by work description:",placeholder ="e.g. road, school, water…")
@@ -666,7 +665,7 @@ def page_project_detail (df ,similar_map ):
         filtered =filtered [filtered ["risk_level"]==risk_filter ]
     if filtered .empty :
         st .warning ("No matching projects found.");return
-    options ={f"#{row ['sr_no']} | {str (row ['work_description'])[:65 ]} | {row ['state']} | {row ['risk_score']:.0f}/100 {row ['risk_emoji']}":int (row .name )for _ ,row in filtered .head (200 ).iterrows ()}
+    options ={f"#{row ['sr_no']} | {str (row ['work_description'])[:65 ]} | {row ['state']} | {row ['risk_score']:.0f}/100":int (row .name )for _ ,row in filtered .head (200 ).iterrows ()}
     row_idx =options [st .selectbox ("Select project:",list (options .keys ()))]
     row =df .loc [row_idx ]
     expl =get_explanation (row )
@@ -678,29 +677,29 @@ def page_project_detail (df ,similar_map ):
     with h2 :
         level =expl ["risk_level"];score =expl ["risk_score"]
         c_bg ,c_fg ,emoji =RISK_COLORS .get (level ,("#e2e8f0","#1e293b","⚪"))
-        st .markdown (f'<div style="text-align:center;padding:1rem;background:{c_fg };border-radius:12px;"><div style="font-size:2.5rem;font-weight:800;color:{c_bg };">{score :.0f}</div><div style="font-size:0.8rem;font-weight:700;color:{c_bg };">/ 100 &nbsp;{emoji } {level } RISK</div></div>',unsafe_allow_html =True )
+        st .markdown (f'<div style="text-align:center;padding:1rem;background:{c_fg };border-radius:12px;"><div style="font-size:2.5rem;font-weight:800;color:{c_bg };">{score :.0f}</div><div style="font-size:0.8rem;font-weight:700;color:{c_bg };">/ 100 &nbsp;{level } RISK</div></div>',unsafe_allow_html =True )
     st .markdown ("<br>",unsafe_allow_html =True )
-    st .markdown ("<div class='section-title'>📋 Project Details</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Project Details</div>",unsafe_allow_html =True )
     d1 ,d2 ,d3 =st .columns (3 )
     with d1 :
         st .markdown (f"**State:** {row .get ('state','N/A')}\n\n**District:** {row .get ('district','N/A')}\n\n**Constituency:** {row .get ('constituency','N/A')}")
     with d2 :
-        st .markdown (f"**MP:** {row .get ('mp_name_clean','N/A')}\n\n**Category:** {row .get ('work_category','N/A')}\n\n**Status:** {status_emoji (row .get ('work_status',''))} {row .get ('work_status','N/A')}")
+        st .markdown (f"**MP:** {row .get ('mp_name_clean','N/A')}\n\n**Category:** {row .get ('work_category','N/A')}\n\n**Status:** {row .get ('work_status','N/A')}")
     with d3 :
         st .markdown (f"**Sanctioned:** {fmt_inr (row .get ('sanction_amount',0 ))}\n\n**Recommended:** {fmt_date (row .get ('recommended_date'))}\n\n**Sanctioned On:** {fmt_date (row .get ('sanction_date'))}")
     record_hash =short_hash ({"sr_no":str (row .get ("sr_no")),"sanction_amount":str (row .get ("sanction_amount")),"work_status":str (row .get ("work_status"))})
-    st .markdown (f"<span style='font-size:0.72rem;color:#94a3b8;'>🔒 Record Hash: <span class='hash-chip'>{record_hash }</span></span>",unsafe_allow_html =True )
+    st .markdown (f"<span style='font-size:0.72rem;color:#94a3b8;'>Record Hash: <span class='hash-chip'>{record_hash }</span></span>",unsafe_allow_html =True )
     st .markdown ("<br>",unsafe_allow_html =True )
     if row .get ("data_quality_flag",False ):
-        st .markdown ("<div style='background:rgba(239, 68, 68, 0.12); border:1px solid #ef4444; border-left:5px solid #dc2626; padding:10px 14px; border-radius:6px; margin-bottom:15px;'><span style='color:#f87171; font-weight:bold;'>⚠️ Missing / Corrupt Data Indicator</span><br><span style='font-size:0.85rem; color:#cbd5e1;'>This record contains garbled descriptions or unparseable amounts. Proceed with caution.</span></div>",unsafe_allow_html =True )
+        st .markdown ("<div style='background:rgba(239, 68, 68, 0.12); border:1px solid #ef4444; border-left:5px solid #dc2626; padding:10px 14px; border-radius:6px; margin-bottom:15px;'><span style='color:#f87171; font-weight:bold;'>Missing / Corrupt Data Indicator</span><br><span style='font-size:0.85rem; color:#cbd5e1;'>This record contains garbled descriptions or unparseable amounts. Proceed with caution.</span></div>",unsafe_allow_html =True )
 
-    st .markdown ("<div class='section-title'>⚠️ WHY FLAGGED? — Evidence Cards</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>WHY FLAGGED? — Evidence Cards</div>",unsafe_allow_html =True )
     for reason in expl ["reasons"]:
         sev =reason .get ("severity","MEDIUM")
         card_cls ="high"if sev =="HIGH"else ("low"if sev =="LOW"else "")
         st .markdown (f'<div class="evidence-card {card_cls }"><span class="evidence-title">{reason ["signal"]}</span><span class="evidence-pts">{reason ["points"]}</span><div class="evidence-detail">{reason ["detail"]}</div></div>',unsafe_allow_html =True )
 
-    st .markdown ("<br><div class='section-title'>📊 Risk Score Breakdown</div>",unsafe_allow_html =True )
+    st .markdown ("<br><div class='section-title'>Risk Score Breakdown</div>",unsafe_allow_html =True )
     bd =pd .DataFrame ({
     "Component":["Cost Anomaly (max 30)","Similar Work (max 25)","Delay/Pending (max 20)","Rule Violations (max 25)"],
     "Score":[expl ["cost_pts"],expl ["dup_pts"],expl ["delay_pts"],expl .get ("rule_pts",0 )],
@@ -721,7 +720,7 @@ def page_project_detail (df ,similar_map ):
             shap_vals ={}
 
     if isinstance (shap_vals ,dict )and shap_vals and sum (abs (v )for v in shap_vals .values ())>0 :
-        st .markdown ("<br><div class='section-title'>🧠 AI Explanation (SHAP Values)</div>",unsafe_allow_html =True )
+        st .markdown ("<br><div class='section-title'>AI Explanation (SHAP Values)</div>",unsafe_allow_html =True )
         st .markdown ("<div style='font-size:0.85rem;color:#cbd5e1;margin-bottom:10px;'>This chart shows which features caused the Isolation Forest ML model to increase (+) or decrease (-) the Cost Anomaly score for this specific work.</div>",unsafe_allow_html =True )
         shap_df =pd .DataFrame (list (shap_vals .items ()),columns =["Feature","Impact"])
         shap_df =shap_df .sort_values (by ="Impact")
@@ -738,20 +737,20 @@ def page_project_detail (df ,similar_map ):
         st .markdown (f"**Amount is {ratio :.1f}× peer median.**")
 
     if pd .notna (peer_median )and peer_median >0 :
-        st .markdown ("<div class='section-title'>🏷️ Peer Comparison</div>",unsafe_allow_html =True )
+        st .markdown ("<div class='section-title'>Peer Comparison</div>",unsafe_allow_html =True )
         st .markdown (f"| Metric | This Work | Peer Group ({peer_label }, n={int (peer_size )}) |\n|--------|-----------|------|\n| Amount | **{fmt_inr (this_amount )}** | Median: {fmt_inr (peer_median )} |\n| vs Median | **{ratio :.1f}×** | P75: {fmt_inr (peer_p75 )} |\n| | | P90: {fmt_inr (peer_p90 )} |")
         fig_p =go .Figure (go .Bar (x =["Peer Median","Peer P75","Peer P90","This Work"],y =[peer_median /1e5 ,peer_p75 /1e5 ,peer_p90 /1e5 ,this_amount /1e5 ],marker_color =["#3b82f6","#f59e0b","#f97316","#ef4444"],text =[fmt_inr (peer_median ),fmt_inr (peer_p75 ),fmt_inr (peer_p90 ),fmt_inr (this_amount )],textposition ="outside"))
         fig_p .update_layout (height =260 ,yaxis_title ="₹ Lakhs",font_family ="Inter",showlegend =False ,margin =dict (l =10 ,r =10 ,t =20 ,b =10 ))
         st .plotly_chart (fig_p ,use_container_width =True )
     t1 ,t2 ,t3 ,t4 =st .columns (4 )
     rec_to_san =row .get ("rec_to_sanction_days",np .nan );days_since =row .get ("days_since_sanction",np .nan )
-    t1 .metric ("📅 Recommended",fmt_date (row .get ("recommended_date")))
-    t2 .metric ("✅ Sanctioned",fmt_date (row .get ("sanction_date")))
-    t3 .metric ("⏱ Rec→Sanction",f"{int (rec_to_san )} days"if pd .notna (rec_to_san )else "N/A",delta ="⚠ Above 75-day guideline"if pd .notna (rec_to_san )and rec_to_san >75 else None ,delta_color ="inverse")
-    t4 .metric ("📆 Days Since Sanction",f"{int (days_since )} days"if pd .notna (days_since )else "N/A")
+    t1 .metric ("Recommended",fmt_date (row .get ("recommended_date")))
+    t2 .metric ("Sanctioned",fmt_date (row .get ("sanction_date")))
+    t3 .metric ("Rec→Sanction",f"{int (rec_to_san )} days"if pd .notna (rec_to_san )else "N/A",delta ="Above 75-day guideline"if pd .notna (rec_to_san )and rec_to_san >75 else None ,delta_color ="inverse")
+    t4 .metric ("Days Since Sanction",f"{int (days_since )} days"if pd .notna (days_since )else "N/A")
     row_id =int (row .get ("row_id",-1 ));matches =similar_map .get (row_id ,[])
     if matches :
-        st .markdown ("<br><div class='section-title'>🔗 Potentially Similar Works</div>",unsafe_allow_html =True )
+        st .markdown ("<br><div class='section-title'>Potentially Similar Works</div>",unsafe_allow_html =True )
         st .markdown ('<div class="disclaimer">High semantic similarity found. Does <strong>not</strong> confirm duplication — human review required.</div>',unsafe_allow_html =True )
         for other_row_id ,sim_score in matches [:5 ]:
             other_rows =df [df ["row_id"]==other_row_id ]
@@ -762,10 +761,10 @@ def page_project_detail (df ,similar_map ):
 
     action_border ={"HIGH":"#ef4444","MEDIUM":"#f59e0b","LOW":"#22c55e"}.get (level ,"#3b82f6")
     action_bg ={"HIGH":"rgba(239, 68, 68, 0.12)","MEDIUM":"rgba(245, 158, 11, 0.12)","LOW":"rgba(34, 197, 94, 0.12)"}.get (level ,"rgba(59, 130, 246, 0.12)")
-    st .markdown (f'<div style="background:{action_bg }; border-left:5px solid {action_border }; border-radius:8px; padding:1.1rem 1.3rem; margin-top:1rem;"><div style="font-weight:700; font-size:0.95rem; color:#ffffff;">📋 Recommended Action</div><div style="font-size:0.88rem; color:#cbd5e1; margin-top:0.35rem; line-height:1.45;">{expl ["recommended_action"]}</div></div>',unsafe_allow_html =True )
+    st .markdown (f'<div style="background:{action_bg }; border-left:5px solid {action_border }; border-radius:8px; padding:1.1rem 1.3rem; margin-top:1rem;"><div style="font-weight:700; font-size:0.95rem; color:#ffffff;">Recommended Action</div><div style="font-size:0.88rem; color:#cbd5e1; margin-top:0.35rem; line-height:1.45;">{expl ["recommended_action"]}</div></div>',unsafe_allow_html =True )
 
     if st .session_state .role =="District Nodal Officer":
-        st .markdown ("<br><div class='section-title'>📸 Geotagged Evidence Upload (eSAKSHI Integration)</div>",unsafe_allow_html =True )
+        st .markdown ("<br><div class='section-title'>Geotagged Evidence Upload (eSAKSHI Integration)</div>",unsafe_allow_html =True )
         st .markdown ("Upload physical inspection photos to clear Missing Evidence alerts.")
         up_col1 ,up_col2 =st .columns (2 )
         with up_col1 :
@@ -775,16 +774,16 @@ def page_project_detail (df ,similar_map ):
             if uploaded_file is not None :
                 if st .button ("Submit Evidence",type ="primary"):
                     add_evidence (row .get ("sr_no"),uploaded_file .name ,st .session_state .user_name ,img_type )
-                    st .success ("✅ Evidence uploaded successfully and logged to DB.")
+                    st .success ("Evidence uploaded successfully and logged to DB.")
 
         existing_evidence =get_evidence_for_work (row .get ("sr_no"))
         if existing_evidence :
             st .markdown ("**Uploaded Evidence:**")
             for ev in existing_evidence :
-                st .markdown (f"- 📄 `{ev ['filename']}` ({ev ['type']}) — uploaded by {ev ['uploaded_by']} on {ev ['timestamp'][:10 ]}")
+                st .markdown (f"- `{ev ['filename']}` ({ev ['type']}) — uploaded by {ev ['uploaded_by']} on {ev ['timestamp'][:10 ]}")
 
 def page_risk_analysis (df ,fdf ):
-    st .markdown ("<div class='section-title'>📈 Risk Analysis Overview</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Risk Analysis Overview</div>",unsafe_allow_html =True )
     sample =fdf .sample (min (3000 ,len (fdf )),random_state =42 )
     fig =px .scatter (sample ,x ="sanction_amount",y ="risk_score",color ="risk_level",color_discrete_map ={"HIGH":"#ef4444","MEDIUM":"#f59e0b","LOW":"#22c55e"},hover_data =["work_description","state","district"],title ="Sanction Amount vs Risk Score",opacity =0.6 )
     fig .update_layout (height =380 ,font_family ="Inter")
@@ -815,20 +814,20 @@ def _add_note (sr ,note ):
     st .session_state .review_notes [sr ].append ({"time":datetime .datetime .now ().strftime ("%d %b %Y %H:%M"),"user":st .session_state .user_name ,"note":note })
 
 def page_review_workflow (df ,fdf ,similar_map ):
-    st .markdown ("<div class='section-title'>📋 Human-in-the-Loop Review Workflow</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Human-in-the-Loop Review Workflow</div>",unsafe_allow_html =True )
     st .markdown ('<div class="disclaimer">Reviewers can acknowledge, verify, escalate, or clear flagged works. Every action is recorded in the tamper-evident audit trail. <strong>No AI decision is final — human judgment is required.</strong></div>',unsafe_allow_html =True )
     st .markdown ('**Workflow:** &nbsp;<span class="status-new">NEW</span> → <span class="status-review">UNDER REVIEW</span> → <span class="status-review">VERIFIED</span> → <span class="status-escalated">ESCALATED</span> / <span class="status-cleared">CLEARED</span> / <span class="status-inspected">INSPECTED</span>',unsafe_allow_html =True )
     st .markdown ("<br>",unsafe_allow_html =True )
     statuses =st .session_state .review_statuses
     c1 ,c2 ,c3 ,c4 =st .columns (4 )
     c1 .metric ("Total Actions Taken",len (statuses ))
-    c2 .metric ("🔺 Escalated",sum (1 for v in statuses .values ()if v =="ESCALATED"))
-    c3 .metric ("✅ Cleared",sum (1 for v in statuses .values ()if v =="CLEARED"))
-    c4 .metric ("🔍 Inspection Requested",sum (1 for v in statuses .values ()if v =="INSPECTED"))
+    c2 .metric ("Escalated",sum (1 for v in statuses .values ()if v =="ESCALATED"))
+    c3 .metric ("Cleared",sum (1 for v in statuses .values ()if v =="CLEARED"))
+    c4 .metric ("Inspection Requested",sum (1 for v in statuses .values ()if v =="INSPECTED"))
     st .markdown ("---")
 
     queue_df =fdf [fdf ["risk_level"].isin (["HIGH","MEDIUM"])].sort_values ("risk_score",ascending =False )
-    tab1 ,tab2 =st .tabs (["📂 Review Queue","✅ Reviewed Cases"])
+    tab1 ,tab2 =st .tabs (["Review Queue","Reviewed Cases"])
     with tab1 :
         st .markdown (f"**{len (queue_df )} flagged works in queue for your jurisdiction**")
         search_rev =st .text_input ("Filter queue:",key ="rev_search",placeholder ="e.g. road, water…")
@@ -843,9 +842,9 @@ def page_review_workflow (df ,fdf ,similar_map ):
 
             missing_photos =(hash (sr )%3 ==0 )and row .get ("is_completed",False )
 
-            with st .expander (f"{emoji } Sr#{sr } | {str (row .get ('work_description',''))[:70 ]} | Risk: {row .get ('risk_score',0 ):.0f}/100 | {current_status }"):
+            with st .expander (f"Sr#{sr } | {str (row .get ('work_description',''))[:70 ]} | Risk: {row .get ('risk_score',0 ):.0f}/100 | {current_status }"):
                 if missing_photos and current_status =="NEW"and st .session_state .role =="District Nodal Officer":
-                    st .warning ("⚠️ **Alert:** Geotagged Completion Evidence is missing from eSAKSHI portal for this work.",icon ="📸")
+                    st .warning ("**Alert:** Geotagged Completion Evidence is missing from eSAKSHI portal for this work.")
 
                 col_info ,col_action =st .columns ([2 ,1 ])
                 with col_info :
@@ -856,29 +855,29 @@ def page_review_workflow (df ,fdf ,similar_map ):
                             st .markdown (f"<small>• {r ['signal']} {r ['points']}: {r ['detail'][:100 ]}</small>",unsafe_allow_html =True )
                     notes =st .session_state .review_notes .get (sr ,[])
                     if notes :
-                        st .markdown ("**📝 Reviewer Notes:**")
+                        st .markdown ("**Reviewer Notes:**")
                         for n in notes :
-                            st .markdown (f"<div class='audit-entry'>📝 [{n ['time']}] <strong>{n ['user']}</strong>: {n ['note']}</div>",unsafe_allow_html =True )
+                            st .markdown (f"<div class='audit-entry'>[{n ['time']}] <strong>{n ['user']}</strong>: {n ['note']}</div>",unsafe_allow_html =True )
                 with col_action :
                     st .markdown (f'<div style="text-align:center;margin-bottom:1rem;"><span class="{status_css }">{current_status }</span></div>',unsafe_allow_html =True )
                     note_text =st .text_area ("Add note:",key =f"note_{sr }",height =80 ,placeholder ="Enter review observation…")
                     b1 ,b2 =st .columns (2 )
                     with b1 :
-                        if st .button ("📋 Under Review",key =f"ur_{sr }",use_container_width =True ):
+                        if st .button ("Under Review",key =f"ur_{sr }",use_container_width =True ):
                             st .session_state .review_statuses [sr ]="UNDER REVIEW";add_audit_entry ("STATUS_CHANGE",sr ,"Marked as UNDER REVIEW")
                             if note_text :_add_note (sr ,note_text )
                             st .rerun ()
-                        if st .button ("✅ Clear",key =f"cl_{sr }",use_container_width =True ):
+                        if st .button ("Clear",key =f"cl_{sr }",use_container_width =True ):
                             st .session_state .review_statuses [sr ]="CLEARED";add_audit_entry ("STATUS_CHANGE",sr ,f"CLEARED — {note_text or 'No note'}")
                             if note_text :_add_note (sr ,note_text );st .success (f"Sr# {sr } cleared.");st .rerun ()
                     with b2 :
-                        if st .button ("🔺 Escalate",key =f"esc_{sr }",use_container_width =True ):
+                        if st .button ("Escalate",key =f"esc_{sr }",use_container_width =True ):
                             st .session_state .review_statuses [sr ]="ESCALATED";add_audit_entry ("STATUS_CHANGE",sr ,f"ESCALATED — {note_text or 'No note'}")
                             if note_text :_add_note (sr ,note_text );st .warning (f"Sr# {sr } escalated.");st .rerun ()
-                        if st .button ("🔍 Inspect",key =f"ins_{sr }",use_container_width =True ):
+                        if st .button ("Inspect",key =f"ins_{sr }",use_container_width =True ):
                             st .session_state .review_statuses [sr ]="INSPECTED";add_audit_entry ("STATUS_CHANGE",sr ,"Field inspection requested")
                             if note_text :_add_note (sr ,note_text );st .info (f"Sr# {sr } sent for inspection.");st .rerun ()
-                    if note_text and st .button ("💾 Save Note Only",key =f"sn_{sr }",use_container_width =True ):
+                    if note_text and st .button ("Save Note Only",key =f"sn_{sr }",use_container_width =True ):
                         _add_note (sr ,note_text );add_audit_entry ("NOTE_ADDED",sr ,note_text );st .success ("Note saved.");st .rerun ()
     with tab2 :
         reviewed ={k :v for k ,v in statuses .items ()if v !="NEW"}
@@ -890,11 +889,11 @@ def page_review_workflow (df ,fdf ,similar_map ):
                 css =REVIEW_STATUS_CSS .get (status ,"status-new")
                 rows_match =df [df ["sr_no"]==sr_no ]
                 desc =rows_match .iloc [0 ]["work_description"][:70 ]if not rows_match .empty else "—"
-                notes_html ="<br>".join ([f"<small style='color:#cbd5e1;'>📝 [{n ['time']}] <strong style='color:#38bdf8;'>{n ['user']}</strong>: {n ['note']}</small>"for n in notes ])if notes else ""
+                notes_html ="<br>".join ([f"<small style='color:#cbd5e1;'>[{n ['time']}] <strong style='color:#38bdf8;'>{n ['user']}</strong>: {n ['note']}</small>"for n in notes ])if notes else ""
                 st .markdown (f'<div style="background:#0f172a; border:1px solid #334155; border-radius:10px; padding:1rem 1.2rem; margin-bottom:0.7rem; color:#f8fafc;"><strong style="color:#ffffff;">Sr# {sr_no }</strong> &nbsp;<span class="{css }">{status }</span><br><small style="color:#94a3b8;">{desc }…</small><br>{notes_html }</div>',unsafe_allow_html =True )
 
 def page_investigation_report (df ,similar_map ):
-    st .markdown ("<div class='section-title'>📄 Automated Investigation Report</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Automated Investigation Report</div>",unsafe_allow_html =True )
     st .markdown ('<div class="disclaimer">This report identifies <strong>potential irregularities</strong> for human review. It does NOT constitute a legal or audit conclusion.</div>',unsafe_allow_html =True )
     search =st .text_input ("Search project:",placeholder ="Enter description keyword or Sr#…")
     filtered =df .copy ()
@@ -902,15 +901,15 @@ def page_investigation_report (df ,similar_map ):
         filtered =filtered [filtered ["work_description"].str .contains (search ,case =False ,na =False )|filtered ["sr_no"].astype (str ).str .contains (search ,na =False )]
     if filtered .empty :
         st .warning ("No projects found.");return
-    options ={f"#{row ['sr_no']} | {str (row ['work_description'])[:65 ]} | {row ['risk_score']:.0f}/100 {row ['risk_emoji']}":int (row .name )for _ ,row in filtered .head (100 ).iterrows ()}
+    options ={f"#{row ['sr_no']} | {str (row ['work_description'])[:65 ]} | Risk: {row ['risk_score']:.0f}/100":int (row .name )for _ ,row in filtered .head (100 ).iterrows ()}
     row_idx =options [st .selectbox ("Select project for report:",list (options .keys ()))]
     row =df .loc [row_idx ];expl =get_explanation (row );sr =str (row .get ("sr_no",""))
     reviewer_notes =st .session_state .review_notes .get (sr ,[]);review_status =st .session_state .review_statuses .get (sr ,"NEW")
     report_text =_generate_report (row ,expl ,similar_map ,df ,reviewer_notes ,review_status )
     st .markdown ("---")
-    st .markdown ("### 📋 Report Preview")
+    st .markdown ("### Report Preview")
     st .code (report_text ,language ="text")
-    st .download_button (label ="⬇️ Download Investigation Report (.txt)",data =report_text ,file_name =f"MPLADS_Sentinel_Report_Sr{sr }_{datetime .date .today ()}.txt",mime ="text/plain",type ="primary",use_container_width =True )
+    st .download_button (label ="Download Investigation Report (.txt)",data =report_text ,file_name =f"MPLADS_Sentinel_Report_Sr{sr }_{datetime .date .today ()}.txt",mime ="text/plain",type ="primary",use_container_width =True )
     add_audit_entry ("REPORT_GENERATED",sr ,f"Investigation report generated for Sr# {sr }")
 
 def _generate_report (row ,expl ,similar_map ,df ,reviewer_notes ,review_status ):
@@ -1010,7 +1009,7 @@ MPLADS Sentinel — SIH 2026 | Prototype Only | NOT an official audit document
 """
 
 def page_audit_trail ():
-    st .markdown ("<div class='section-title'>🔒 Complete Audit Trail — Tamper-Evident Log</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>Complete Audit Trail — Tamper-Evident Log</div>",unsafe_allow_html =True )
     st .markdown ('<div class="disclaimer">Every action is logged with a SHA-256 chain hash. Any modification to a past entry breaks the chain — providing tamper-evidence.</div>',unsafe_allow_html =True )
     log =get_audit_logs ()
     if not log :
@@ -1025,18 +1024,18 @@ def page_audit_trail ():
 
     col_v ,col_t =st .columns ([1 ,1 ])
     with col_v :
-        if st .button ("✅ Verify Chain Integrity",use_container_width =True ):
+        if st .button ("Verify Chain Integrity",use_container_width =True ):
             chain_ok ,broken_links =verify_chain ()
             if chain_ok :
-                st .success (f"✅ Chain intact ({len (log )} entries)")
+                st .success (f"Chain intact ({len (log )} entries)")
             else :
                 tampered_id =broken_links [0 ]['id']
-                st .error (f"❌ Tampered at entry #{tampered_id }")
+                st .error (f"Tampered at entry #{tampered_id }")
                 for b in broken_links :
                     st .write (b )
 
     with col_t :
-        if st .button ("🚨 Tamper DB (Demo Mode)",type ="primary",use_container_width =True ):
+        if st .button ("Tamper DB (Demo Mode)",type ="primary",use_container_width =True ):
             tamper_demo_record ()
             st .warning ("A record in the SQLite database was just manually tampered with! Click 'Verify Chain Integrity' to see the system catch it.")
 
@@ -1049,14 +1048,13 @@ def page_audit_trail ():
     if "All"in action_filter or e ["action"]in action_filter
     ]
 
-    tab_cards ,tab_table =st .tabs (["📜 Visual Tamper-Evident Ledger","📊 Tabular Audit Log"])
+    tab_cards ,tab_table =st .tabs (["Visual Tamper-Evident Ledger","Tabular Audit Log"])
 
     with tab_cards :
         if not filtered_log :
             st .info ("No matching audit entries.")
         for entry in filtered_log :
             act =entry ["action"]
-            icon ={"LOGIN":"🔓","LOGOUT":"🔒","STATUS_CHANGE":"🔄","NOTE_ADDED":"📝","REPORT_GENERATED":"📄","CITIZEN_FEEDBACK":"💬","AUDIT_TRIGGERED":"🚔"}.get (act ,"•")
             border_color ={
             "LOGIN":"#3b82f6",
             "STATUS_CHANGE":"#f59e0b",
@@ -1071,11 +1069,11 @@ def page_audit_trail ():
             st .markdown (f"""
             <div style="background:#0f172a; border:1px solid #334155; border-left:5px solid {border_color }; border-radius:8px; padding:1rem 1.2rem; margin-bottom:0.75rem; color:#f8fafc;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                    <span style="font-weight:700; font-size:0.95rem; color:#60a5fa;">{icon } {act }</span>
-                    <span style="font-size:0.8rem; color:#94a3b8; font-family:monospace;">🕒 {ts_clean }</span>
+                    <span style="font-weight:700; font-size:0.95rem; color:#60a5fa;">{act }</span>
+                    <span style="font-size:0.8rem; color:#94a3b8; font-family:monospace;">{ts_clean }</span>
                 </div>
                 <div style="font-size:0.86rem; color:#e2e8f0; margin-bottom:0.45rem;">
-                    <strong style="color:#ffffff;">👤 {entry ['user']}</strong>
+                    <strong style="color:#ffffff;">User: {entry ['user']}</strong>
                     <span style="color:#94a3b8;">({entry ['role']})</span> &nbsp;•&nbsp;
                     <span style="color:#cbd5e1;">Project ID:</span> <code style="background:#1e293b; color:#38bdf8; padding:2px 7px; border-radius:4px; font-size:0.82rem;">{proj_id }</code>
                 </div>
@@ -1096,11 +1094,11 @@ def page_audit_trail ():
             cols_present =[c for c in cols_to_show if c in log_df .columns ]
             st .dataframe (log_df [cols_present ],use_container_width =True ,hide_index =True )
 
-    st .download_button ("⬇️ Download Full Audit Log (JSON)",data =json .dumps (log ,indent =2 ,default =str ),file_name =f"audit_log_{datetime .date .today ()}.json",mime ="application/json")
+    st .download_button ("Download Full Audit Log (JSON)",data =json .dumps (log ,indent =2 ,default =str ),file_name =f"audit_log_{datetime .date .today ()}.json",mime ="application/json")
 
 def page_citizen_feedback(fdf):
     role = st.session_state.get("role", "")
-    st.markdown("<div class='section-title'>💬 Citizen Feedback & Grievance Redressal</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title'>Citizen Feedback & Grievance Redressal</div>", unsafe_allow_html=True)
     st.markdown('<div class="disclaimer">Citizens can report concerns regarding specific MPLADS works. Administrative officials investigate all submissions and update verification status.</div>', unsafe_allow_html=True)
 
     if role in ["MoSPI Admin", "District Nodal Officer"]:
@@ -1116,7 +1114,7 @@ def page_citizen_feedback(fdf):
             c4.metric("Resolved / Closed", len([f for f in feedback if f.get("status") in ["RESOLVED", "DISMISSED"]]))
 
             st.markdown("---")
-            st.markdown("#### 🔍 All Citizen Grievance Submissions")
+            st.markdown("#### All Citizen Grievance Submissions")
 
             # Status Filter
             status_filter = st.multiselect("Filter by Status:", ["RECEIVED", "UNDER_INVESTIGATION", "RESOLVED", "DISMISSED"], default=["RECEIVED", "UNDER_INVESTIGATION", "RESOLVED", "DISMISSED"])
@@ -1132,15 +1130,15 @@ def page_citizen_feedback(fdf):
                     with st.expander(f"Ref# CF-{entry['id']:04d} | Work Sr#{entry.get('sr_no','—')} | {entry.get('category','')} | Status: {status}"):
                         c_left, c_right = st.columns([2, 1])
                         with c_left:
-                            st.markdown(f"**📌 Work Sr. No.:** `{entry.get('sr_no','—')}`")
-                            st.markdown(f"**📍 Location:** {entry.get('district','—')}, {entry.get('state','—')}")
-                            st.markdown(f"**📋 Work Description:** {entry.get('project_desc', 'Not specified')}")
-                            st.markdown(f"**⚠️ Issue Category:** {entry.get('category','')}")
-                            st.markdown(f"**📝 Description:** {entry.get('description','')}")
-                            st.markdown(f"**👤 Submitted By:** {entry.get('contact','')} ({entry.get('timestamp','')})")
+                            st.markdown(f"**Work Sr. No.:** `{entry.get('sr_no','—')}`")
+                            st.markdown(f"**Location:** {entry.get('district','—')}, {entry.get('state','—')}")
+                            st.markdown(f"**Work Description:** {entry.get('project_desc', 'Not specified')}")
+                            st.markdown(f"**Issue Category:** {entry.get('category','')}")
+                            st.markdown(f"**Description:** {entry.get('description','')}")
+                            st.markdown(f"**Submitted By:** {entry.get('contact','')} ({entry.get('timestamp','')})")
                         
                         with c_right:
-                            st.markdown("##### 🛠️ Admin Action")
+                            st.markdown("##### Admin Action")
                             new_status = st.selectbox("Update Status:", ["RECEIVED", "UNDER_INVESTIGATION", "RESOLVED", "DISMISSED"], index=["RECEIVED", "UNDER_INVESTIGATION", "RESOLVED", "DISMISSED"].index(status), key=f"fb_status_{entry['id']}")
                             notes = st.text_input("Official Resolution Note:", value=entry.get("admin_notes", ""), key=f"fb_note_{entry['id']}")
                             if st.button("Save Action", key=f"btn_save_fb_{entry['id']}"):
@@ -1152,11 +1150,11 @@ def page_citizen_feedback(fdf):
 
                 st.markdown("---")
                 fb_df = pd.DataFrame(feedback)
-                st.download_button("⬇️ Download All Feedback CSV", data=fb_df.to_csv(index=False), file_name=f"citizen_feedback_{datetime.date.today()}.csv", mime="text/csv")
+                st.download_button("Download All Feedback CSV", data=fb_df.to_csv(index=False), file_name=f"citizen_feedback_{datetime.date.today()}.csv", mime="text/csv")
     
     else:
         # Public / MP View — Citizen Feedback Submission Form
-        st.markdown("### 📝 Report a Concern / Ground Grievance")
+        st.markdown("### Report a Concern / Ground Grievance")
         
         # Step 1: Work Selection / Search
         st.markdown("#### 1. Target Work Selection")
@@ -1177,7 +1175,7 @@ def page_citizen_feedback(fdf):
                 desc_val = str(target_row.get("work_description", ""))
                 amt_val = fmt_inr(target_row.get("sanction_amount", 0))
                 
-                st.info(f"📌 **Selected Project Details:**\n- **Sr. No.:** {sr_no_val}\n- **Work:** {desc_val}\n- **Location:** {district_val}, {state_val}\n- **Sanction Amount:** {amt_val}")
+                st.info(f"**Selected Project Details:**\n- **Sr. No.:** {sr_no_val}\n- **Work:** {desc_val}\n- **Location:** {district_val}, {state_val}\n- **Sanction Amount:** {amt_val}")
             else:
                 sr_no_val = st.text_input("Work Sr. No. (if known):", placeholder="e.g. 4821")
                 state_val = st.selectbox("State:", ["Select…"] + sorted(fdf["state"].dropna().unique().tolist()))
@@ -1201,7 +1199,7 @@ def page_citizen_feedback(fdf):
             contact = st.text_input("Contact Email / Phone (Optional for status updates):", placeholder="name@example.com / 9876543210")
             is_anonymous = st.checkbox("Submit Anonymously")
             
-            submitted = st.form_submit_button("📤 Submit Grievance Report", type="primary", use_container_width=True)
+            submitted = st.form_submit_button("Submit Grievance Report", type="primary", use_container_width=True)
             
             if submitted:
                 if not description or category == "Select category…":
@@ -1223,22 +1221,22 @@ def page_citizen_feedback(fdf):
                     st.session_state.feedback_list.append(entry)
                     add_audit_entry("CITIZEN_FEEDBACK", sr_no_val or "—", f"Grievance CF-{entry['id']:04d} — {category}")
                     
-                    st.success(f"✅ **Grievance Submitted Successfully!**")
+                    st.success("**Grievance Submitted Successfully!**")
                     st.markdown(f"""
                     <div style="background:#0f172a; border:2px solid #22c55e; border-radius:10px; padding:1.2rem; color:white; margin-top:1rem;">
-                        <h4 style="color:#4ade80; margin:0 0 0.5rem 0;">📄 Official Grievance Receipt</h4>
+                        <h4 style="color:#4ade80; margin:0 0 0.5rem 0;">Official Grievance Receipt</h4>
                         <p style="margin:2px 0;"><strong>Reference No.:</strong> <code style="color:#38bdf8; font-size:1.1rem;">CF-2026-{entry['id']:04d}</code></p>
                         <p style="margin:2px 0;"><strong>Timestamp:</strong> {entry['timestamp']}</p>
                         <p style="margin:2px 0;"><strong>Target Work Sr. No.:</strong> {entry['sr_no']}</p>
                         <p style="margin:2px 0;"><strong>Category:</strong> {category}</p>
                         <p style="margin:2px 0;"><strong>Status:</strong> <span style="background:#3b82f6; padding:2px 8px; border-radius:4px;">RECEIVED</span></p>
                         <hr style="border-color:#334155; margin:0.8rem 0;">
-                        <p style="font-size:0.82rem; color:#94a3b8; margin:0;">ℹ️ Your report has been logged into the official audit queue for District Nodal Officer verification.</p>
+                        <p style="font-size:0.82rem; color:#94a3b8; margin:0;">Your report has been logged into the official audit queue for District Nodal Officer verification.</p>
                     </div>
                     """, unsafe_allow_html=True)
 
 def page_transparency_portal (df ):
-    st .markdown ('<div class="sentinel-header"><h1>🌐 Public Transparency Portal</h1><p>MPLADS Works — Public Dashboard | Read-Only View</p></div>',unsafe_allow_html =True )
+    st .markdown ('<div class="sentinel-header"><h1>Public Transparency Portal</h1><p>MPLADS Works — Public Dashboard | Read-Only View</p></div>',unsafe_allow_html =True )
     c1 ,c2 ,c3 ,c4 =st .columns (4 )
     c1 .metric ("Total Works",f"{len (df ):,}")
     c2 .metric ("Total Sanctioned",fmt_inr_short (df ["sanction_amount"].sum ()))
@@ -1255,7 +1253,7 @@ def page_transparency_portal (df ):
     st .plotly_chart (fig ,use_container_width =True )
 
     st .markdown ("---")
-    st .markdown ("#### 🔍 Search Works & View Evidence")
+    st .markdown ("#### Search Works & View Evidence")
     pub_search =st .text_input ("Search (e.g. road, Bihar, school…):",placeholder ="Enter keyword...")
     if pub_search :
         pub_results =df [df ["work_description"].str .contains (pub_search ,case =False ,na =False )|df ["state"].str .contains (pub_search ,case =False ,na =False )].head (20 )
@@ -1270,14 +1268,14 @@ def page_transparency_portal (df ):
                     existing_evidence =get_evidence_for_work (row .get ('sr_no'))
 
                     if existing_evidence :
-                        st .markdown ("**📸 Execution Evidence (Simulated evidence records; eSAKSHI geotag integration planned)**")
+                        st .markdown ("**Execution Evidence (eSAKSHI Geotag Integration)**")
                         for ev in existing_evidence :
-                            st .info (f"📄 {ev ['filename']} ({ev ['type']}) — Uploaded: {ev ['timestamp'][:10 ]}")
+                            st .info (f"{ev ['filename']} ({ev ['type']}) — Uploaded: {ev ['timestamp'][:10 ]}")
                     else :
                         st .markdown ("*No geotagged evidence uploaded yet.*")
 
 def page_about ():
-    st .markdown ("<div class='section-title'>ℹ️ About MPLADS Sentinel & Methodology</div>",unsafe_allow_html =True )
+    st .markdown ("<div class='section-title'>About MPLADS Sentinel & Methodology</div>",unsafe_allow_html =True )
     st .markdown ("""
 ### What is MPLADS Sentinel?
 An AI-assisted intelligence layer on top of MPLADS sanctioned-works data.
@@ -1323,10 +1321,10 @@ Tamper-Evident Audit Trail (SHA-256 chain hashing)
 """)
     col1 ,col2 =st .columns (2 )
     with col1 :
-        st .markdown ("### ✅ Data Available")
+        st .markdown ("### Data Available")
         for f in AVAILABLE_FIELDS :st .markdown (f"- {f }")
     with col2 :
-        st .markdown ("### 🔮 Future Data Needed")
+        st .markdown ("### Future Data Needed")
         for f in MISSING_FIELDS :st .markdown (f"- {f }")
 
 def main ():
@@ -1356,7 +1354,7 @@ def main ():
 
     role =st .session_state .role
     if page not in ROLE_PAGES .get (role ,[]):
-        st .error ("🚨 Access Denied: Role privileges insufficient for this view.")
+        st .error ("Access Denied: Role privileges insufficient for this view.")
         st .stop ()
 
     if role in ["Member of Parliament","Public Viewer"]:
