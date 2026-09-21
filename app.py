@@ -436,73 +436,149 @@ def page_dashboard (df ,fdf ):
         st .plotly_chart (fig ,use_container_width =True )
 
 def page_mospi_admin_settings (df ,fdf ):
-    st .markdown ("<div class='section-title'>⚙️ System Tuning & Global Audits (MoSPI Admin)</div>",unsafe_allow_html =True )
-    st .markdown ('<div class="disclaimer">Adjust global AI risk thresholds and observe live changes to priority queues. Initiate macro-level state audits.</div>',unsafe_allow_html =True )
+    st.markdown ("<div class='section-title'>⚙️ System Tuning & Global Audits (MoSPI Admin)</div>",unsafe_allow_html =True )
+    st.markdown ('<div class="disclaimer">Adjust global AI risk thresholds, ingest new sanctioned projects into the system, and initiate macro-level state audits.</div>',unsafe_allow_html =True )
 
-    col1 ,col2 =st .columns (2 )
-    with col1 :
-        st .subheader ("🎛️ AI Sensitivity Tuning")
-        st .markdown ("Adjust the weight (0-50) given to each risk component. Changes apply instantly.")
-        w_c =st .slider ("Cost Anomaly Sensitivity",0 ,50 ,st .session_state .w_cost )
-        w_d =st .slider ("Semantic Similarity Sensitivity",0 ,50 ,st .session_state .w_dup )
-        w_l =st .slider ("Delay / Pending Sensitivity",0 ,50 ,st .session_state .w_del )
-        w_p =st .slider ("Pattern Violation Sensitivity",0 ,50 ,st .session_state .w_pat )
-        min_a =st .number_input ("Minimum Sanction Amount to Flag (₹ Lakhs)",0.0 ,500.0 ,st .session_state .min_amt ,1.0 )
+    tab_tune, tab_add, tab_heat = st.tabs([
+        "🎛️ AI Sensitivity & Global Audits",
+        "➕ Register New Sanctioned Work (Data Ingestion)",
+        "🗺️ Macro Insights & Heatmaps"
+    ])
 
-        if st .button ("Apply New Sensitivity Weights",type ="primary"):
-            st .session_state .w_cost =w_c
-            st .session_state .w_dup =w_d
-            st .session_state .w_del =w_l
-            st .session_state .w_pat =w_p
-            st .session_state .min_amt =min_a
-            st .rerun ()
+    with tab_tune:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("🎛️ AI Sensitivity Tuning")
+            st.markdown("Adjust the weight (0-50) given to each risk component. Changes apply instantly.")
+            w_c = st.slider("Cost Anomaly Sensitivity", 0, 50, st.session_state.w_cost)
+            w_d = st.slider("Semantic Similarity Sensitivity", 0, 50, st.session_state.w_dup)
+            w_l = st.slider("Delay / Pending Sensitivity", 0, 50, st.session_state.w_del)
+            w_p = st.slider("Pattern Violation Sensitivity", 0, 50, st.session_state.w_pat)
+            min_a = st.number_input("Minimum Sanction Amount to Flag (₹ Lakhs)", 0.0, 500.0, st.session_state.min_amt, 1.0)
 
-    with col2 :
-        st .subheader ("🚔 Initiate Global Audit")
-        target_state =st .selectbox ("Target State",["Select State..."]+sorted ([str (x )for x in df ["state"].dropna ().unique ()]))
-        target_district =st .selectbox ("Target District",["Select District..."]+sorted ([str (x )for x in df [df ["state"]==target_state ]["district"].dropna ().unique ()]if target_state !="Select State..."else []))
-        audit_reason =st .text_area ("Reason for Audit",placeholder ="e.g., Unusually high concentration of delayed works...")
-        if st .button ("Trigger Audit Order",type ="primary"):
-            if target_state !="Select State...":
-                add_audit_entry ("AUDIT_TRIGGERED","GLOBAL",f"Initiated audit for {target_state } - {target_district }. Reason: {audit_reason }")
-                st .success ("✅ Audit order dispatched to District Magistrate and CAG.")
-            else :
-                st .error ("Select a state first.")
+            if st.button("Apply New Sensitivity Weights", type="primary"):
+                st.session_state.w_cost = w_c
+                st.session_state.w_dup = w_d
+                st.session_state.w_del = w_l
+                st.session_state.w_pat = w_p
+                st.session_state.min_amt = min_a
+                st.rerun()
 
-    st .markdown ("---")
-    st .subheader ("🗺️ Macro Insights & Heatmaps")
+        with col2:
+            st.subheader("🚔 Initiate Global Audit")
+            target_state = st.selectbox("Target State", ["Select State..."] + sorted([str(x) for x in df["state"].dropna().unique()]))
+            target_district = st.selectbox("Target District", ["Select District..."] + sorted([str(x) for x in df[df["state"] == target_state]["district"].dropna().unique()] if target_state != "Select State..." else []))
+            audit_reason = st.text_area("Reason for Audit", placeholder="e.g., Unusually high concentration of delayed works...")
+            if st.button("Trigger Audit Order", type="primary"):
+                if target_state != "Select State...":
+                    add_audit_entry("AUDIT_TRIGGERED", "GLOBAL", f"Initiated audit for {target_state} - {target_district}. Reason: {audit_reason}")
+                    st.success("✅ Audit order dispatched to District Magistrate and CAG.")
+                else:
+                    st.error("Select a state first.")
 
-    mc1 ,mc2 =st .columns (2 )
-    with mc1 :
+    with tab_add:
+        st.subheader("➕ Ingest New MPLADS Sanctioned Work")
+        st.markdown("Register a new sanctioned project into the system. The AI Risk Engine will automatically calculate anomaly scores and assign risk priority.")
 
-        state_totals =fdf .groupby ("state").size ()
-        state_highs =fdf [fdf ["risk_level"]=="HIGH"].groupby ("state").size ()
-        pct_high =(state_highs /state_totals *100 ).fillna (0 ).reset_index (name ="high_risk_pct")
-        pct_high =pct_high [state_totals .reset_index (name ="counts")["counts"]>20 ]
-        pct_high =pct_high .sort_values ("high_risk_pct",ascending =False ).head (10 )
+        with st.form("admin_add_project_form", clear_on_submit=True):
+            col_a, col_b = st.columns(2)
+            with col_a:
+                new_desc = st.text_area("Work Description:", placeholder="e.g., Construction of 2-room Primary Health Sub-Centre at Rampur", height=100)
+                new_cat = st.selectbox("Work Category:", ["Normal/Others", "Drinking Water", "Education", "Health", "Roads and Bridges", "Sanitation", "Sports", "Environment"])
+                new_state = st.selectbox("State:", sorted([str(x) for x in df["state"].dropna().unique()]))
+                new_dist = st.text_input("District / IDA:", placeholder="e.g. Agra")
+                new_amt_lakhs = st.number_input("Sanction Amount (in ₹ Lakhs):", min_value=0.1, max_value=500.0, value=25.0, step=0.5)
 
-        fig_st =px .bar (pct_high ,x ="high_risk_pct",y ="state",orientation ="h",color ="high_risk_pct",
-        color_continuous_scale ="Reds",title ="Top 10 States by % of HIGH-Risk Works")
-        fig_st .update_layout (height =400 ,yaxis ={"categoryorder":"total ascending"},font_family ="Inter",coloraxis_showscale =False )
-        st .plotly_chart (fig_st ,use_container_width =True )
+            with col_b:
+                new_mp = st.text_input("Hon'ble MP Name:", placeholder="e.g. Shri Rajesh Kumar")
+                new_const = st.text_input("Constituency:", placeholder="e.g. Agra")
+                new_rec_date = st.date_input("Recommended Date:", datetime.date.today() - datetime.timedelta(days=90))
+                new_sanc_date = st.date_input("Sanction Date:", datetime.date.today())
+                new_status = st.selectbox("Work Status:", ["Sanctioned", "Time Estimation", "Vendor Identification", "Work in Progress", "Physical Inspection", "Work Completed"])
 
-    with mc2 :
+            submit_proj = st.form_submit_button("🚀 Register Project & Trigger AI Scoring", type="primary", use_container_width=True)
 
-        valid_states =pct_high ["state"].tolist ()
-        hmap_df =fdf [fdf ["state"].isin (valid_states )]
-        pivot =hmap_df .pivot_table (index ="state",columns ="work_status",values ="days_since_sanction",aggfunc ="median").fillna (0 )
+            if submit_proj:
+                if not new_desc or not new_dist or not new_mp or not new_const:
+                    st.error("Please fill in Description, District, MP Name, and Constituency.")
+                else:
+                    max_sr = int(df["sr_no"].max()) if not df.empty else 19000
+                    new_sr = max_sr + 1
+                    sanc_amt = new_amt_lakhs * 100000
 
-        fig_hm =go .Figure (data =go .Heatmap (
-        z =pivot .values ,
-        x =pivot .columns ,
-        y =pivot .index ,
-        colorscale ="YlOrRd",
-        text =np .round (pivot .values ,0 ),
-        texttemplate ="%{text} days",
-        textfont ={"size":10 }
-        ))
-        fig_hm .update_layout (title ="Median Delay (Days) by State & Status",height =400 ,font_family ="Inter")
-        st .plotly_chart (fig_hm ,use_container_width =True )
+                    new_row = {
+                        "sr_no": new_sr,
+                        "work_description": new_desc,
+                        "work_category": new_cat,
+                        "state": new_state,
+                        "district": new_dist,
+                        "ida": new_dist,
+                        "mp_name": new_mp,
+                        "constituency": new_const,
+                        "sanction_amount": sanc_amt,
+                        "amount_lakhs": new_amt_lakhs,
+                        "recommended_date": new_rec_date.strftime("%Y-%m-%d"),
+                        "sanction_date": new_sanc_date.strftime("%Y-%m-%d"),
+                        "work_status": new_status,
+                        "is_completed": (new_status == "Work Completed"),
+                        "is_incomplete": (new_status != "Work Completed"),
+                        "days_since_sanction": (datetime.date.today() - new_sanc_date).days,
+                        "financial_year": f"{new_sanc_date.year}-{str(new_sanc_date.year+1)[-2:]}"
+                    }
+
+                    if "custom_projects" not in st.session_state:
+                        st.session_state.custom_projects = []
+                    st.session_state.custom_projects.append(new_row)
+
+                    add_audit_entry("PROJECT_ADDED", str(new_sr), f"MoSPI Admin added work #{new_sr}: {new_desc[:50]}... (₹{new_amt_lakhs}L)")
+
+                    st.success(f"✅ **Project #{new_sr} Ingested & AI Scored Successfully!**")
+                    st.markdown(f"""
+                    <div style="background:#0f172a; border:2px solid #3b82f6; border-radius:10px; padding:1.2rem; color:white; margin-top:0.8rem;">
+                        <h4 style="color:#38bdf8; margin:0 0 0.5rem 0;">🎉 New Sanctioned Project Summary</h4>
+                        <p style="margin:3px 0;"><strong>Work Sr. No.:</strong> <code style="color:#38bdf8; font-size:1.1rem;">#{new_sr}</code></p>
+                        <p style="margin:3px 0;"><strong>Description:</strong> {new_desc}</p>
+                        <p style="margin:3px 0;"><strong>Location:</strong> {new_dist}, {new_state} | <strong>MP:</strong> {new_mp} ({new_const})</p>
+                        <p style="margin:3px 0;"><strong>Sanctioned Amount:</strong> ₹{new_amt_lakhs:.1f} Lakhs (₹{sanc_amt:,.0f})</p>
+                        <p style="margin:3px 0;"><strong>Status:</strong> {new_status}</p>
+                        <hr style="border-color:#334155; margin:0.8rem 0;">
+                        <p style="font-size:0.84rem; color:#4ade80; margin:0;">🚀 Project is now live across Dashboard, High-Risk Queue, and Audit Reports!</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.rerun()
+
+    with tab_heat:
+        st.subheader("🗺️ Macro Insights & Heatmaps")
+
+        mc1, mc2 = st.columns(2)
+        with mc1:
+            state_totals = fdf.groupby("state").size()
+            state_highs = fdf[fdf["risk_level"] == "HIGH"].groupby("state").size()
+            pct_high = (state_highs / state_totals * 100).fillna(0).reset_index(name="high_risk_pct")
+            pct_high = pct_high[state_totals.reset_index(name="counts")["counts"] > 20]
+            pct_high = pct_high.sort_values("high_risk_pct", ascending=False).head(10)
+
+            fig_st = px.bar(pct_high, x="high_risk_pct", y="state", orientation="h", color="high_risk_pct",
+                            color_continuous_scale="Reds", title="Top 10 States by % of HIGH-Risk Works")
+            fig_st.update_layout(height=400, yaxis={"categoryorder": "total ascending"}, font_family="Inter", coloraxis_showscale=False)
+            st.plotly_chart(fig_st, use_container_width=True)
+
+        with mc2:
+            valid_states = pct_high["state"].tolist()
+            hmap_df = fdf[fdf["state"].isin(valid_states)]
+            pivot = hmap_df.pivot_table(index="state", columns="work_status", values="days_since_sanction", aggfunc="median").fillna(0)
+
+            fig_hm = go.Figure(data=go.Heatmap(
+                z=pivot.values,
+                x=pivot.columns,
+                y=pivot.index,
+                colorscale="YlOrRd",
+                text=np.round(pivot.values, 0),
+                texttemplate="%{text} days",
+                textfont={"size": 10}
+            ))
+            fig_hm.update_layout(title="Median Delay (Days) by State & Status", height=400, font_family="Inter")
+            st.plotly_chart(fig_hm, use_container_width=True)
 
 def page_mp_dashboard (fdf ):
     st .markdown ("<div class='section-title'>🏛️ My Constituency Dashboard</div>",unsafe_allow_html =True )
@@ -1260,6 +1336,13 @@ def main ():
 
     with st .spinner ("Loading MPLADS data and running core AI models…"):
         base_df ,similar_map =run_core_models ()
+
+    if st.session_state.get("custom_projects"):
+        c_df = pd.DataFrame(st.session_state.custom_projects)
+        for col in base_df.columns:
+            if col not in c_df.columns:
+                c_df[col] = 0.0 if "score" in col or "amount" in col else ("—" if col != "cost_anomaly_flag" and col != "dup_flag" and col != "delay_flag" else False)
+        base_df = pd.concat([c_df, base_df], ignore_index=True)
 
     df =compute_risk_scores (
     base_df ,
